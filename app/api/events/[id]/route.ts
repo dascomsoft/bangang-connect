@@ -6,7 +6,7 @@ import User from '@/models/User';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -26,7 +26,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
     }
     
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     
     const event = await Event.findByIdAndUpdate(id, body, { new: true });
@@ -44,7 +44,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -64,7 +64,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
     }
     
-    const { id } = params;
+    const { id } = await params;
     
     const event = await Event.findByIdAndDelete(id);
     

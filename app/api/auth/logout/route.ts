@@ -1,14 +1,32 @@
 import { NextResponse } from 'next/server';
 
 export async function POST() {
-  const response = NextResponse.json({ success: true });
-  
-  // Supprimer le cookie
-  response.cookies.set('token', '', {
-    httpOnly: true,
-    expires: new Date(0),
-    path: '/'
-  });
-  
-  return response;
+
+  try {
+
+    const response = NextResponse.json({
+      success: true,
+      message: 'Déconnexion réussie'
+    });
+
+    // Supprimer le cookie JWT
+    response.cookies.set('token', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      expires: new Date(0),
+      path: '/',
+    });
+
+    return response;
+
+  } catch (error) {
+
+    console.error('Logout error:', error);
+
+    return NextResponse.json(
+      { error: 'Erreur serveur' },
+      { status: 500 }
+    );
+  }
 }

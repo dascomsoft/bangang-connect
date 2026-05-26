@@ -160,6 +160,8 @@ export default function ChatPage() {
   }
   
   return (
+
+    <div className='pt-30'>
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 mb-8 text-white">
@@ -197,6 +199,7 @@ export default function ChatPage() {
       {selectedSector && user && (
         <ChatBox sectorId={selectedSector} userId={user._id} />
       )}
+    </div>
     </div>
   );
 }

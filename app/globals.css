@@ -60,3 +60,135 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-blue-600;
 }
+
+
+/* Responsive animations */
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Tap highlight pour mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Boutons tactiles pour mobile */
+@media (max-width: 768px) {
+  button, 
+  a, 
+  [role="button"],
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
+  
+  input, 
+  select, 
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Container responsive */
+.container-mobile {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-mobile {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-mobile {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Grilles responsives */
+.grid-responsive {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+
+/* Optimisations mobiles */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 60px; /* Espace pour la bottom bar */
+  }
+  
+  /* Amélioration des cartes */
+  .card-mobile {
+    @apply rounded-xl shadow-sm mb-3;
+  }
+  
+  /* Boutons plus grands */
+  button, .btn {
+    min-height: 44px;
+  }
+  
+  /* Inputs sans zoom */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Header fixe */
+  .fixed-header {
+    @apply fixed top-0 left-0 right-0 bg-white shadow-md z-50;
+  }
+  
+  /* Scroll smooth */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}

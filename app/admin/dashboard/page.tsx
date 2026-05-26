@@ -1,3 +1,46 @@
+// import { Suspense } from 'react';
+// import StatsCards from '../components/StatsCards';
+
+// async function getStats() {
+//   const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+//   const res = await fetch(`${baseUrl}/api/admin/stats`, {
+//     cache: 'no-store',
+//     headers: {
+//       Cookie: require('next/headers').cookies().toString(),
+//     },
+//   });
+  
+//   if (!res.ok) {
+//     return {
+//       totalUsers: 0,
+//       totalCommunities: 0,
+//       totalSectors: 0,
+//       totalEvents: 0,
+//       totalAds: 0,
+//       totalBusinesses: 0,
+//       pendingBusinesses: 0,
+//     };
+//   }
+  
+//   return res.json();
+// }
+
+// export default async function AdminDashboardPage() {
+//   const stats = await getStats();
+  
+//   return (
+//     <Suspense fallback={<div className="text-center py-12">Chargement des statistiques...</div>}>
+//       <StatsCards stats={stats} />
+//     </Suspense>
+//   );
+// }
+
+
+
+
+
+
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -162,6 +205,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (activeTab === 'users') loadUsers();
     if (activeTab === 'communities') loadCommunities();
+    if (activeTab === 'create-sector') loadCommunitiesForSelect();
     if (activeTab === 'all-sectors') loadSectors();
     if (activeTab === 'events') loadEvents();
     if (activeTab === 'ads') loadAds();
@@ -213,9 +257,20 @@ export default function AdminDashboard() {
       const response = await fetch('/api/communities');
       const data = await response.json();
       setCommunities(Array.isArray(data) ? data : []);
+      setStats(prev => ({ ...prev, totalCommunities: data.length }));
     } catch (error) {
       console.error('Error loading communities:', error);
       toast.error('Erreur chargement communautés');
+    }
+  };
+  
+  const loadCommunitiesForSelect = async () => {
+    try {
+      const response = await fetch('/api/communities');
+      const data = await response.json();
+      setCommunities(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error loading communities:', error);
     }
   };
   
@@ -224,6 +279,7 @@ export default function AdminDashboard() {
       const response = await fetch('/api/sectors');
       const data = await response.json();
       setSectors(Array.isArray(data) ? data : []);
+      setStats(prev => ({ ...prev, totalSectors: data.length }));
     } catch (error) {
       console.error('Error loading sectors:', error);
       toast.error('Erreur chargement secteurs');
@@ -751,12 +807,6 @@ export default function AdminDashboard() {
   
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 text-white">
-        <h1 className="text-2xl font-bold">Administration</h1>
-        <p>Gestion complète de la plateforme Bangang Connect</p>
-      </div>
-      
       {/* Navigation Tabs */}
       <div className="flex flex-wrap gap-2 border-b">
         <button onClick={() => setActiveTab('dashboard')} className={`px-4 py-2 rounded-t-lg transition ${activeTab === 'dashboard' ? 'bg-purple-600 text-white' : 'bg-gray-100'}`}>📊 Dashboard</button>

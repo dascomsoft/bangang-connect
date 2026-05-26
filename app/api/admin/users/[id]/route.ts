@@ -8,7 +8,7 @@ import Comment from '@/models/Comment';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -28,7 +28,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
     }
     
-    const { id } = params;
+    const { id } = await params;
     
     // Ne pas supprimer soi-même
     if (id === decoded.userId) {

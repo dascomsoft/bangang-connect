@@ -7,24 +7,54 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
     
-    const { email, password } = await request.json();
+    const { phone, password } = await request.json();
     
-    if (!email || !password) {
-      return NextResponse.json({ error: 'Erreure' }, { status: 400 });
+    console.log('Tentative de connexion pour:', phone);
+    
+    if (!phone || !password) {
+      return NextResponse.json({ error: 'Téléphone et mot de passe requis' }, { status: 400 });
     }
     
-    const user = await User.findOne({ email });
+    // Nettoyer le numéro de téléphone
+    let cleanPhone = phone.toString().replace(/\s/g, '');
+    
+    // Si le numéro commence par 0, enlever le 0
+    if (cleanPhone.startsWith('0')) {
+      cleanPhone = cleanPhone.substring(1);
+    }
+    
+    // Si le numéro ne commence pas par +237, l'ajouter
+    if (!cleanPhone.startsWith('+237')) {
+      // Si le numéro commence par 237, ajouter +
+      if (cleanPhone.startsWith('237')) {
+        cleanPhone = '+' + cleanPhone;
+      } else {
+        // Sinon, ajouter +237
+        cleanPhone = '+237' + cleanPhone;
+      }
+    }
+    
+    console.log('Numéro nettoyé:', cleanPhone);
+    
+    // Chercher l'utilisateur par téléphone
+    const user = await User.findOne({ phone: cleanPhone });
+    
     if (!user) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+      console.log('Utilisateur non trouvé pour:', cleanPhone);
+      return NextResponse.json({ error: 'Téléphone ou mot de passe incorrect' }, { status: 401 });
     }
+    
+    console.log('Utilisateur trouvé:', user.name);
     
     const isValidPassword = await comparePassword(password, user.password);
+    
     if (!isValidPassword) {
-      return NextResponse.json({ error: 'Mot de passe incorrecte' }, { status: 401 });
+      console.log('Mot de passe incorrect');
+      return NextResponse.json({ error: 'Téléphone ou mot de passe incorrect' }, { status: 401 });
     }
     
     if (user.isRestricted) {
-      return NextResponse.json({ error: 'Rectriction de compte' }, { status: 403 });
+      return NextResponse.json({ error: 'Compte restreint. Contactez l\'administrateur.' }, { status: 403 });
     }
     
     const token = generateToken(user._id.toString(), user.role);
@@ -36,6 +66,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ user: userResponse, token });
   } catch (error) {
     console.error('Login error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 });
   }
 }

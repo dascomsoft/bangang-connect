@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -12,7 +13,7 @@ interface Comment {
     name: string;
     email: string;
     photo?: string;
-  };
+  } | null;
   createdAt: string;
 }
 
@@ -23,12 +24,12 @@ interface AdCardProps {
     content: string;
     is_sponsored: boolean;
     sponsor_expires_at?: Date;
-    createdBy: {
+    createdBy?: {
       name: string;
       email: string;
       photo?: string;
-    };
-    createdAt: Date;
+    } | null;
+    createdAt: Date | string;
     sectorId?: { name: string };
     communityId?: { name: string };
   };
@@ -44,7 +45,6 @@ export default function AdCard({ ad, onSponsor, canSponsor, currentUserId }: AdC
   const [loadingComments, setLoadingComments] = useState(false);
   const [sending, setSending] = useState(false);
 
-  // Recharger les commentaires quand on ouvre la section
   useEffect(() => {
     if (showComments) {
       loadComments();
@@ -110,6 +110,20 @@ export default function AdCard({ ad, onSponsor, canSponsor, currentUserId }: AdC
     });
   };
 
+  // Valeurs par défaut pour éviter les erreurs
+  const createdByName = ad.createdBy?.name || 'Anonyme';
+  const createdByPhoto = ad.createdBy?.photo || '/default-avatar.png';
+
+  // Helper pour obtenir le nom d'un commentaire en toute sécurité
+  const getCommentUserName = (comment: Comment): string => {
+    return comment.userId?.name || 'Utilisateur inconnu';
+  };
+
+  const getCommentUserInitial = (comment: Comment): string => {
+    const name = comment.userId?.name;
+    return name ? name.charAt(0) : '?';
+  };
+
   return (
     <div className={`bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl ${ad.is_sponsored ? 'border-2 border-yellow-400' : ''}`}>
       {ad.is_sponsored && (
@@ -123,12 +137,12 @@ export default function AdCard({ ad, onSponsor, canSponsor, currentUserId }: AdC
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
-              {ad.createdBy.name?.charAt(0) || '?'}
+              {createdByName.charAt(0) || '?'}
             </div>
             <div>
               <h3 className="font-semibold text-gray-900">{ad.title}</h3>
               <p className="text-xs text-gray-500">
-                Publié par {ad.createdBy.name} • {formatDate(ad.createdAt)}
+                Publié par {createdByName} • {formatDate(ad.createdAt)}
               </p>
               {ad.sectorId && (
                 <p className="text-xs text-blue-600">Secteur: {ad.sectorId.name}</p>
@@ -168,7 +182,6 @@ export default function AdCard({ ad, onSponsor, canSponsor, currentUserId }: AdC
         {/* Commentaires */}
         {showComments && (
           <div className="mt-4 pt-4 border-t">
-            {/* Liste des commentaires */}
             <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
               {loadingComments ? (
                 <div className="text-center py-4">
@@ -183,9 +196,9 @@ export default function AdCard({ ad, onSponsor, canSponsor, currentUserId }: AdC
                   <div key={comment._id} className="bg-gray-50 rounded-lg p-3">
                     <div className="flex items-center space-x-2 mb-2">
                       <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                        {comment.userId.name?.charAt(0) || '?'}
+                        {getCommentUserInitial(comment)}
                       </div>
-                      <span className="font-semibold text-sm">{comment.userId.name}</span>
+                      <span className="font-semibold text-sm">{getCommentUserName(comment)}</span>
                       <span className="text-xs text-gray-500">
                         {formatDate(comment.createdAt)}
                       </span>
@@ -196,7 +209,6 @@ export default function AdCard({ ad, onSponsor, canSponsor, currentUserId }: AdC
               )}
             </div>
             
-            {/* Formulaire d'ajout */}
             <div className="flex space-x-2">
               <input
                 type="text"

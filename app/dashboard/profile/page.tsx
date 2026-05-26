@@ -164,7 +164,7 @@ export default function ProfilePage() {
               className="hidden"
               disabled={uploading}
             />
-            <Button size="sm" variant="secondary" onClick={() => document.querySelector('input[type="file"]')?.click()}>
+            <Button size="sm" variant="secondary" onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}>
               Changer la photo
             </Button>
           </label>

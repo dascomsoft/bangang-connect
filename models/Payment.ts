@@ -6,17 +6,17 @@ const PaymentSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  sectorId: {
+  businessId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Sector'
+    ref: 'Business'
   },
-  eventId: {
+  jobId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Event'
+    ref: 'Job'
   },
-  adId: {
+  productId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Ad'
+    ref: 'Product'
   },
   amount: {
     type: Number,
@@ -24,22 +24,29 @@ const PaymentSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['sector_creation', 'event_boost', 'ad_sponsor'],
+    enum: ['business_sponsor', 'job_posting', 'product_sponsor', 'premium_ad'],
     required: true
+  },
+  duration: {
+    type: Number, // en jours
+    default: 30
   },
   status: {
     type: String,
     enum: ['pending', 'completed', 'failed', 'refunded'],
     default: 'pending'
   },
-  reference: {
+  paymentMethod: {
+    type: String,
+    enum: ['orange_money', 'mtn_money', 'card', 'cash'],
+    required: true
+  },
+  transactionId: {
     type: String,
     unique: true
   },
-  paymentMethod: {
-    type: String,
-    enum: ['orange_money', 'mtn_money', 'card', 'free'],
-    default: 'free'
+  receipt: {
+    type: String
   },
   createdAt: {
     type: Date,

@@ -1,166 +1,431 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import Card from '@/components/ui/Card';
 
 export default function HomePage() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section avec animation */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800">
-        <div className="absolute inset-0 bg-black opacity-20"></div>
-        
-        {/* Animated background shapes */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-white opacity-10 rounded-full filter blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-white opacity-10 rounded-full filter blur-3xl animate-pulse delay-1000"></div>
+    <main className="w-full overflow-hidden bg-white">
+
+      {/* ================================================= */}
+      {/* HERO SECTION */}
+      {/* ================================================= */}
+      <section className="relative w-full min-h-[85vh] overflow-hidden">
+
+        {/* BACKGROUND IMAGE */}
+        <div className="absolute inset-0">
+
+          <Image
+            src="/roibangang.jpg"
+            alt="Royaume Bangang"
+            fill
+            priority
+            className="object-cover object-center"
+          />
+
+          {/* DARK OVERLAY */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
+
+          {/* EXTRA EFFECT */}
+          <div className="absolute inset-0 bg-black/20" />
         </div>
-        
-        <div className={`relative container mx-auto px-4 py-20 lg:py-32 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <div className="text-center">
-            <div className="inline-block mb-6 px-4 py-2 bg-white bg-opacity-20 rounded-full backdrop-blur-sm">
-              <span className="text-white font-semibold">🌟 Bienvenue sur Bangang Connect</span>
+
+        {/* CONTENT */}
+        <div className="relative z-10 flex items-center min-h-[85vh]">
+
+          <div className="container max-auto px-4 md:px-12 lg:px-20">
+
+            <div className="max-w-4xl">
+
+              {/* BADGE */}
+              <div className="inline-flex items-center gap-3 bg-white/10 border border-white/20 backdrop-blur-md px-5 py-2 rounded-full mb-8">
+
+                <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
+
+                <span className="uppercase tracking-[0.25em] text-xs md:text-sm text-white/90 font-medium">
+                  Royaume des Bamboutos
+                </span>
+              </div>
+
+              {/* TITLE */}
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[0.95] text-white mb-8">
+
+                Bienvenue à{' '}
+
+                <span className="text-yellow-400">
+                  Bangang
+                </span>
+
+              </h1>
+
+              {/* SUBTITLE */}
+              <p className="text-xl md:text-2xl lg:text-3xl text-blue-100 font-light leading-relaxed mb-8 max-w-3xl">
+                Un Royaume Atypique en Pleine Renaissance Culturelle
+              </p>
+
+              {/* DESCRIPTION */}
+              <p className="text-base md:text-lg lg:text-xl text-gray-200 leading-relaxed max-w-2xl mb-12">
+
+                Terre d’histoire millénaire, de sites sacrés majestueux et de dynamisme communautaire.
+
+                Sous le leadership de{' '}
+
+                <strong className="text-yellow-300">
+                  S.M. Momo Keubou Serges Evariste
+                </strong>
+
+                , 19e Roi du Royaume Bangang.
+
+              </p>
+
+              {/* BUTTONS */}
+              <div className="flex flex-wrap gap-5">
+
+                <Link
+                  href="/history"
+                  className="group relative overflow-hidden bg-gradient-to-r from-yellow-500 to-amber-600 px-8 py-4 rounded-2xl text-white font-semibold text-lg shadow-2xl hover:scale-105 transition duration-300"
+                >
+
+                  <span className="relative z-10">
+                    Découvrir notre Histoire
+                  </span>
+
+                  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition" />
+
+                </Link>
+
+                <Link
+                  href="/culture"
+                  className="border border-white/30 backdrop-blur-md bg-white/10 px-8 py-4 rounded-2xl text-white font-semibold text-lg hover:bg-white hover:text-black transition-all duration-300"
+                >
+                  Explorer la Culture
+                </Link>
+
+              </div>
+
             </div>
-            
-            <h1 className="text-5xl lg:text-7xl font-bold text-white mb-6 animate-fade-in">
-              Connectez-vous à votre
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">
-                Communauté Bangang
-              </span>
-            </h1>
-            
-            <p className="text-xl lg:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
-              La plateforme qui unit la communauté Bangang du Cameroun et de la diaspora
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/register"
-                className="group inline-flex items-center justify-center px-8 py-3 text-lg font-semibold text-blue-600 bg-white rounded-xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg"
-              >
-                <span>🚀 Commencer maintenant</span>
-                <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
-              </Link>
-              
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center px-8 py-3 text-lg font-semibold text-white bg-transparent border-2 border-white rounded-xl hover:bg-white hover:text-blue-600 transition-all duration-300"
-              >
-                🔑 Se connecter
-              </Link>
-            </div>
+
           </div>
-        </div>
-        
-        {/* Wave bottom */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full">
-            <path fill="#f9fafb" fillOpacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-          </svg>
-        </div>
-      </div>
 
-      {/* Features Section avec animations au scroll */}
-      <div className="container mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Pourquoi choisir{' '}
-            <span className="gradient-text">Bangang Connect</span>
-          </h2>
-          <p className="text-xl text-gray-600">
-            Une plateforme moderne au service de votre communauté
-          </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Feature 1 */}
-          <div className="group bg-white rounded-2xl shadow-xl p-8 card-hover">
-            <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <span className="text-4xl">🌍</span>
+        {/* SCROLL INDICATOR */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
+
+          <div className="flex flex-col items-center gap-2 text-white/70">
+
+            <span className="text-xs tracking-[0.3em] uppercase">
+              Scroll
+            </span>
+
+            <div className="w-6 h-10 border border-white/40 rounded-full flex justify-center">
+
+              <div className="w-1 h-3 bg-white rounded-full mt-2 animate-bounce" />
+
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">Communautés</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Rejoignez votre ville ou pays d'origine et connectez-vous avec les membres de votre région
-            </p>
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <span className="text-blue-600 font-semibold">Plus de 20 communautés →</span>
-            </div>
+
           </div>
 
-          {/* Feature 2 */}
-          <div className="group bg-white rounded-2xl shadow-xl p-8 card-hover hover:shadow-2xl">
-            <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-teal-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <span className="text-4xl">💬</span>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">Chat en direct</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Échangez en temps réel avec les membres de votre secteur en toute sécurité
-            </p>
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <span className="text-green-600 font-semibold">Modération intelligente →</span>
-            </div>
-          </div>
-
-          {/* Feature 3 */}
-          <div className="group bg-white rounded-2xl shadow-xl p-8 card-hover">
-            <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <span className="text-4xl">📅</span>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">Événements</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Organisez, boostez et participez aux événements de votre secteur
-            </p>
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <span className="text-purple-600 font-semibold">Système de boost →</span>
-            </div>
-          </div>
         </div>
-      </div>
 
-      {/* Stats Section avec compteurs animés */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 text-center text-white">
-            <div className="transform hover:scale-105 transition-transform">
-              <div className="text-5xl font-bold mb-2 animate-pulse">500+</div>
-              <div className="text-blue-100 text-lg">Membres actifs</div>
+      </section>
+
+      {/* ================================================= */}
+      {/* STATISTIQUES */}
+      {/* ================================================= */}
+      <section className="bg-white py-14 border-b">
+
+        <div className="max-w-7xl mx-auto px-6">
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+
+            <div>
+              <div className="text-4xl font-black text-blue-700">
+                140,000
+              </div>
+
+              <div className="text-gray-600 mt-2">
+                Habitants
+              </div>
             </div>
-            <div className="transform hover:scale-105 transition-transform">
-              <div className="text-5xl font-bold mb-2 animate-pulse">20+</div>
-              <div className="text-blue-100 text-lg">Communautés</div>
+
+            <div>
+              <div className="text-4xl font-black text-blue-700">
+                134
+              </div>
+
+              <div className="text-gray-600 mt-2">
+                km² de territoire
+              </div>
             </div>
-            <div className="transform hover:scale-105 transition-transform">
-              <div className="text-5xl font-bold mb-2 animate-pulse">50+</div>
-              <div className="text-blue-100 text-lg">Événements organisés</div>
+
+            <div>
+              <div className="text-4xl font-black text-blue-700">
+                19
+              </div>
+
+              <div className="text-gray-600 mt-2">
+                Rois dans la dynastie
+              </div>
             </div>
+
+            <div>
+              <div className="text-4xl font-black text-blue-700">
+                99.5
+              </div>
+
+              <div className="text-gray-600 mt-2">
+                FM - Radio Émergent
+              </div>
+            </div>
+
           </div>
-        </div>
-      </div>
 
-      {/* CTA Section finale */}
-      <div className="container mx-auto px-4 py-20">
-        <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-3xl p-12 text-center transform hover:scale-105 transition-transform duration-500">
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-            Prêt à rejoindre l'aventure ?
-          </h2>
-          <p className="text-xl text-gray-300 mb-8">
-            Inscrivez-vous maintenant et faites partie de la plus grande communauté Bangang
-          </p>
-          <Link
-            href="/register"
-            className="inline-flex items-center justify-center px-8 py-3 text-lg font-semibold text-gray-900 bg-white rounded-xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-xl"
-          >
-            🎉 S'inscrire gratuitement
-            <span className="ml-2">→</span>
+        </div>
+
+      </section>
+
+      {/* ================================================= */}
+      {/* MAIN SECTIONS */}
+      {/* ================================================= */}
+      <section className="max-w-7xl mx-auto px-6 py-24">
+
+        <div className="grid md:grid-cols-3 gap-10">
+
+          {/* HISTOIRE */}
+          <Link href="/history" className="group">
+
+            <Card className="overflow-hidden h-full border-0 shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-3 rounded-3xl">
+
+              <div className="h-72 relative overflow-hidden">
+
+                <Image
+                  src="/bams.jpg"
+                  alt="Chefferie Bangang"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+
+              </div>
+
+              <div className="p-8">
+
+                <h2 className="text-3xl font-bold mb-4">
+                  Notre Histoire
+                </h2>
+
+                <p className="text-gray-600 leading-relaxed mb-6">
+                  Découvrez l’origine, la fondation par Fouo Patouo et la prestigieuse dynastie des rois du royaume Ngyemboon.
+                </p>
+
+                <span className="text-blue-700 font-semibold group-hover:underline">
+                  En savoir plus →
+                </span>
+
+              </div>
+
+            </Card>
+
           </Link>
+
+          {/* CULTURE */}
+          <Link href="/culture" className="group">
+
+            <Card className="overflow-hidden h-full border-0 shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-3 rounded-3xl">
+
+              <div className="h-72 relative overflow-hidden">
+
+                <Image
+                  src="/bams1.jpg"
+                  alt="Culture Bangang"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+
+              </div>
+
+              <div className="p-8">
+
+                <h2 className="text-3xl font-bold mb-4">
+                  Culture & Patrimoine
+                </h2>
+
+                <p className="text-gray-600 leading-relaxed mb-6">
+                  Chute de Mekoup, forêt sacrée, tenues royales et renaissance culturelle du royaume Bangang.
+                </p>
+
+                <span className="text-blue-700 font-semibold group-hover:underline">
+                  Explorer le patrimoine →
+                </span>
+
+              </div>
+
+            </Card>
+
+          </Link>
+
+          {/* NEWS */}
+          <Link href="/news" className="group">
+
+            <Card className="overflow-hidden h-full border-0 shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-3 rounded-3xl">
+
+              <div className="h-72 relative overflow-hidden">
+
+                <Image
+                  src="/bams3.jpg"
+                  alt="Actualités Bangang"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+
+              </div>
+
+              <div className="p-8">
+
+                <h2 className="text-3xl font-bold mb-4">
+                  Actualités
+                </h2>
+
+                <p className="text-gray-600 leading-relaxed mb-6">
+                  Reconstruction de la chefferie, musée royal et initiatives culturelles communautaires.
+                </p>
+
+                <span className="text-blue-700 font-semibold group-hover:underline">
+                  Voir les actualités →
+                </span>
+
+              </div>
+
+            </Card>
+
+          </Link>
+
         </div>
-      </div>
-    </div>
+
+      </section>
+
+    </main>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

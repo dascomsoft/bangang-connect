@@ -4,12 +4,12 @@ import Community from '@/models/Community';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
     
-    const { id } = params;
+    const { id } = await params;
     const community = await Community.findById(id);
     
     if (!community) {

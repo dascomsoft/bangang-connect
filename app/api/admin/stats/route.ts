@@ -1,36 +1,48 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
-import { getAuthToken, verifyToken } from '@/lib/auth';
 import User from '@/models/User';
 import Community from '@/models/Community';
 import Sector from '@/models/Sector';
 import Event from '@/models/Event';
+import Ad from '@/models/Ad';
+import Business from '@/models/Business';
+import { verifyToken } from '@/lib/auth';
+import { cookies } from 'next/headers';
 
-export async function GET(request: NextRequest) {
+// ✅ Mise en cache des stats
+
+ // Revalider toutes les 60 secondes
+
+export async function GET() {
   try {
     await connectDB();
     
-    const token = await getAuthToken();
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    
+    const cookieStore = await cookies();
+    const token = cookieStore.get('token')?.value;
+    if (!token) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     const decoded = verifyToken(token);
-    if (!decoded || typeof decoded === 'string') {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    
+    if (!decoded || decoded.role !== 'super_admin') {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 403 });
     }
     
-    const currentUser = await User.findById(decoded.userId);
-    
-    if (!currentUser || currentUser.role !== 'super_admin') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-    
-    const [totalUsers, totalCommunities, totalSectors, totalEvents] = await Promise.all([
+    // ✅ Exécution parallèle des COUNT (optimisé)
+    const [
+      totalUsers,
+      totalCommunities,
+      totalSectors,
+      totalEvents,
+      totalAds,
+      totalBusinesses,
+      pendingBusinesses,
+    ] = await Promise.all([
       User.countDocuments(),
       Community.countDocuments(),
       Sector.countDocuments(),
-      Event.countDocuments()
+      Event.countDocuments(),
+      Ad.countDocuments(),
+      Business.countDocuments(),
+      Business.countDocuments({ status: 'pending' }),
     ]);
     
     return NextResponse.json({
@@ -38,11 +50,13 @@ export async function GET(request: NextRequest) {
       totalCommunities,
       totalSectors,
       totalEvents,
+      totalAds,
+      totalBusinesses,
+      pendingBusinesses,
       totalRevenue: 0,
-      pendingSectors: 0
     });
   } catch (error) {
-    console.error('Error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('Stats error:', error);
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }

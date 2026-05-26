@@ -17,7 +17,7 @@ const SectorSchema = new mongoose.Schema({
 
 SectorSchema.index({ name: 1, communityId: 1 }, { unique: true });
 
-// Fonction simple pour mettre à jour le compteur
+// Version corrigée du middleware - sans 'next' si non utilisé
 SectorSchema.pre('save', function() {
   this.membersCount = this.members.length;
   this.updatedAt = new Date();
