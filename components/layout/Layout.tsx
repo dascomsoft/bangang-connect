@@ -44,16 +44,15 @@ export default function Layout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 overflow-x-hidden flex flex-col">
+    <div className="min-h-screen bg-gray-500 overflow-x-hidden flex flex-col">
       <Navbar user={user} />
 
       <div className="flex flex-1 pt-16">
         {user && <Sidebar user={user} />}
 
         <main
-          className={`flex-1 transition-all duration-300 ${
-            user ? 'lg:ml-64' : ''
-          }`}
+          className={`flex-1 transition-all duration-300 ${user ? 'lg:ml-64' : ''
+            }`}
         >
           <div className="w-full">
             {children}
