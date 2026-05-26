@@ -1,11 +1,9 @@
-
-
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
+import Footer from './Footer'; // ✅ Importer le Footer
 
 export default function Layout({
   children,
@@ -51,11 +49,11 @@ export default function Layout({
 
   // LAYOUT
   return (
-    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden flex flex-col">
       {/* NAVBAR - reçoit user directement */}
       <Navbar user={user} />
 
-      <div className="flex pt-16">
+      <div className="flex pt-16 flex-1">
         {/* SIDEBAR - reçoit user directement */}
         {user && <Sidebar user={user} />}
 
@@ -70,28 +68,9 @@ export default function Layout({
           </div>
         </main>
       </div>
+
+      {/* ✅ FOOTER - ajouté ici */}
+      <Footer />
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

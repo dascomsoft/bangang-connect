@@ -11,7 +11,7 @@ import {
 import { 
   FiMail, FiPhone, FiMapPin, FiClock, FiSend, 
   FiHeart, FiGlobe, FiUsers, FiBriefcase, FiCalendar,
-  FiBookOpen, FiMusic, FiNewspaper
+  FiBookOpen, FiMusic, 
 } from 'react-icons/fi';
 import { MdDashboard, MdChat, MdSecurity } from 'react-icons/md';
 
@@ -63,7 +63,7 @@ export default function Footer() {
     { name: 'Accueil', href: '/', icon: FiGlobe },
     { name: 'Histoire', href: '/history', icon: FiBookOpen },
     { name: 'Culture', href: '/culture', icon: FiMusic },
-    { name: 'Actualités', href: '/news', icon: FiNewspaper },
+    { name: 'Actualités', href: '/news'},
     { name: 'Événements', href: '/events', icon: FiCalendar },
     { name: 'Business', href: '/business', icon: FiBriefcase },
     { name: 'Communauté', href: '/community', icon: FiUsers },
@@ -190,7 +190,6 @@ export default function Footer() {
                       href={link.href}
                       className="text-gray-400 hover:text-blue-500 transition flex items-center gap-2 text-sm"
                     >
-                      <Icon size={14} />
                       <span>{link.name}</span>
                     </Link>
                   </li>
