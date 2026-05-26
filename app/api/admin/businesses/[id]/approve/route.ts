@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import Business from '@/models/Business';
 import { getCurrentUser } from '@/lib/auth';
+export const dynamic = 'force-dynamic';
 
 export async function POST(
   req: NextRequest,

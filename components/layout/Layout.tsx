@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
-import Footer from './Footer'; // ✅ Importer le Footer
+import Footer from './Footer';
 
 export default function Layout({
   children,
@@ -14,9 +14,6 @@ export default function Layout({
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // =================================================
-  // CHECK AUTH - UNE SEULE FOIS
-  // =================================================
   useEffect(() => {
     checkAuth();
   }, []);
@@ -38,7 +35,6 @@ export default function Layout({
     }
   };
 
-  // LOADING SCREEN
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
@@ -47,17 +43,13 @@ export default function Layout({
     );
   }
 
-  // LAYOUT
   return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden flex flex-col">
-      {/* NAVBAR - reçoit user directement */}
       <Navbar user={user} />
 
-      <div className="flex pt-16 flex-1">
-        {/* SIDEBAR - reçoit user directement */}
+      <div className="flex flex-1 pt-16">
         {user && <Sidebar user={user} />}
 
-        {/* MAIN CONTENT - avec marge dynamique */}
         <main
           className={`flex-1 transition-all duration-300 ${
             user ? 'lg:ml-64' : ''
@@ -66,11 +58,9 @@ export default function Layout({
           <div className="w-full">
             {children}
           </div>
+          <Footer />
         </main>
       </div>
-
-      {/* ✅ FOOTER - ajouté ici */}
-      <Footer />
     </div>
   );
 }

@@ -47,7 +47,7 @@ export default function LoginPage() {
         toast.success('Connexion réussie');
         // Redirection selon le rôle
         if (data.user.role === 'super_admin') {
-          router.push('/dashboard/admin');
+          router.push('/admin/dashboard/');
         } else if (data.user.role === 'sector_president') {
           router.push('/dashboard/president');
         } else {
