@@ -74,7 +74,10 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import Event from '@/models/Event';
+import { verifyToken } from '@/lib/auth';
+import { cookies } from 'next/headers';
 
+// ✅ GET - Récupérer les participants
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -95,6 +98,66 @@ export async function GET(
       participants: event.participants || [],
       count: event.participants?.length || 0
     });
+  } catch (error) {
+    console.error('Error:', error);
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  }
+}
+
+// ✅ POST - Ajouter/Retirer la participation
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    await connectDB();
+    
+    // Vérifier l'authentification
+    const cookieStore = await cookies();
+    const token = cookieStore.get('token')?.value;
+    
+    if (!token) {
+      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
+    }
+    
+    const decoded = verifyToken(token);
+    if (!decoded || typeof decoded === 'string') {
+      return NextResponse.json({ error: 'Token invalide' }, { status: 401 });
+    }
+    
+    const { id } = await params;
+    
+    const event = await Event.findById(id);
+    if (!event) {
+      return NextResponse.json({ error: 'Événement non trouvé' }, { status: 404 });
+    }
+    
+    const userId = decoded.userId;
+    const isParticipating = event.participants?.includes(userId);
+    
+    if (isParticipating) {
+      // Retirer la participation
+      event.participants = event.participants.filter(
+        (p: string) => p.toString() !== userId
+      );
+      await event.save();
+      
+      return NextResponse.json({
+        success: true,
+        message: 'Vous ne participez plus à cet événement',
+        participating: false
+      });
+    } else {
+      // Ajouter la participation
+      event.participants.push(userId);
+      await event.save();
+      
+      return NextResponse.json({
+        success: true,
+        message: 'Participation ajoutée avec succès',
+        participating: true
+      });
+    }
   } catch (error) {
     console.error('Error:', error);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });

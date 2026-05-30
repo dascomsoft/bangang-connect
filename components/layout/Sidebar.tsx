@@ -25,6 +25,9 @@ export default function Sidebar({ user }: SidebarProps) {
   // Menu commun à tous (uniquement communauté)
   const commonItems = [
     { href: '/community', label: 'Communauté' },
+    { href: '/events', label: 'Événements' },
+    { href: '/sectors', label: 'Secteurs' },
+
   ];
 
   // Menu selon le rôle
@@ -79,7 +82,7 @@ export default function Sidebar({ user }: SidebarProps) {
   }
 
   return (
-    <aside className="fixed left-0 top-16 h-full w-64 bg-white border-r border-gray-200 z-40 overflow-y-auto">
+    <aside className="fixed left-0 top-16 h-full w-64 bg-slate-700 border-r border-gray-200 z-40 overflow-y-auto">
       <nav className="p-4">
         {/* Info utilisateur avec photo */}
         {user && (
@@ -91,10 +94,10 @@ export default function Sidebar({ user }: SidebarProps) {
                 className="w-10 h-10 rounded-full object-cover border-2 border-blue-500"
               />
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-gray-900 text-sm truncate">
+                <p className="font-semibold text-white text-sm truncate">
                   {user.name}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-white">
                   {getRoleLabel()}
                 </p>
               </div>
@@ -111,10 +114,10 @@ export default function Sidebar({ user }: SidebarProps) {
                 key={item.href}
                 href={item.href}
                 prefetch={false}
-                className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition ${
+                className={`block px-3 py-2.5 rounded-lg text-xl font-medium transition ${
                   isActive
                     ? 'bg-blue-600 text-white'
-                    : 'text-gray-800 hover:bg-gray-100'
+                    : 'text-white text-3xl font-extrabold'
                 }`}
               >
                 {item.label}
@@ -133,9 +136,9 @@ export default function Sidebar({ user }: SidebarProps) {
               await fetch('/api/auth/logout', { method: 'POST' });
               window.location.href = '/';
             }}
-            className="w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition"
+            className="w-full text-left px-3 py-2.5 rounded-lg text-xl bg-white font-extrabold text-red-600 hover:bg-red-50 transition"
           >
-            🚪 Déconnexion
+            Déconnexion
           </button>
         </div>
 

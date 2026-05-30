@@ -1,44 +1,3 @@
-// import { Suspense } from 'react';
-// import StatsCards from '../components/StatsCards';
-
-// async function getStats() {
-//   const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
-//   const res = await fetch(`${baseUrl}/api/admin/stats`, {
-//     cache: 'no-store',
-//     headers: {
-//       Cookie: require('next/headers').cookies().toString(),
-//     },
-//   });
-  
-//   if (!res.ok) {
-//     return {
-//       totalUsers: 0,
-//       totalCommunities: 0,
-//       totalSectors: 0,
-//       totalEvents: 0,
-//       totalAds: 0,
-//       totalBusinesses: 0,
-//       pendingBusinesses: 0,
-//     };
-//   }
-  
-//   return res.json();
-// }
-
-// export default async function AdminDashboardPage() {
-//   const stats = await getStats();
-  
-//   return (
-//     <Suspense fallback={<div className="text-center py-12">Chargement des statistiques...</div>}>
-//       <StatsCards stats={stats} />
-//     </Suspense>
-//   );
-// }
-
-
-
-
-
 
 
 'use client';
@@ -49,6 +8,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { toast } from 'react-hot-toast';
+
 
 // ============================================
 // TYPES
@@ -116,16 +76,16 @@ interface Ad {
 
 export default function AdminDashboard() {
   const router = useRouter();
-  
+
   // État onglet actif
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  
+
   // États pour les modales d'édition
   const [editingItem, setEditingItem] = useState<any>(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  
+
   // ============================================
   // STATS
   // ============================================
@@ -137,12 +97,12 @@ export default function AdminDashboard() {
     totalAds: 0,
     totalRevenue: 0
   });
-  
+
   // ============================================
   // UTILISATEURS
   // ============================================
   const [users, setUsers] = useState<User[]>([]);
-  
+
   // ============================================
   // COMMUNAUTÉS
   // ============================================
@@ -154,7 +114,7 @@ export default function AdminDashboard() {
     country: 'Cameroun',
     city: ''
   });
-  
+
   // ============================================
   // SECTEURS
   // ============================================
@@ -168,7 +128,7 @@ export default function AdminDashboard() {
     presidentName: '',
     sendInvitation: true
   });
-  
+
   // ============================================
   // ÉVÉNEMENTS
   // ============================================
@@ -182,7 +142,7 @@ export default function AdminDashboard() {
     sectorId: '',
     is_boosted: false
   });
-  
+
   // ============================================
   // ANNONCES
   // ============================================
@@ -194,14 +154,14 @@ export default function AdminDashboard() {
     sectorId: '',
     communityId: ''
   });
-  
+
   // ============================================
   // CHARGEMENT DES DONNÉES
   // ============================================
   useEffect(() => {
     loadInitialData();
   }, []);
-  
+
   useEffect(() => {
     if (activeTab === 'users') loadUsers();
     if (activeTab === 'communities') loadCommunities();
@@ -210,7 +170,7 @@ export default function AdminDashboard() {
     if (activeTab === 'events') loadEvents();
     if (activeTab === 'ads') loadAds();
   }, [activeTab]);
-  
+
   const loadInitialData = async () => {
     setLoading(true);
     try {
@@ -218,21 +178,21 @@ export default function AdminDashboard() {
         fetch('/api/auth/me'),
         fetch('/api/admin/stats')
       ]);
-      
+
       if (!userRes.ok) {
         router.push('/login');
         return;
       }
-      
+
       const userData = await userRes.json();
       if (userData.user.role !== 'super_admin') {
         router.push('/dashboard');
         return;
       }
-      
+
       const statsData = await statsRes.json();
       setStats(statsData);
-      
+
     } catch (error) {
       console.error('Error loading initial data:', error);
       toast.error('Erreur de chargement des données');
@@ -240,7 +200,7 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
-  
+
   const loadUsers = async () => {
     try {
       const response = await fetch('/api/admin/users');
@@ -251,7 +211,7 @@ export default function AdminDashboard() {
       toast.error('Erreur chargement utilisateurs');
     }
   };
-  
+
   const loadCommunities = async () => {
     try {
       const response = await fetch('/api/communities');
@@ -263,7 +223,7 @@ export default function AdminDashboard() {
       toast.error('Erreur chargement communautés');
     }
   };
-  
+
   const loadCommunitiesForSelect = async () => {
     try {
       const response = await fetch('/api/communities');
@@ -273,7 +233,7 @@ export default function AdminDashboard() {
       console.error('Error loading communities:', error);
     }
   };
-  
+
   const loadSectors = async () => {
     try {
       const response = await fetch('/api/sectors');
@@ -285,7 +245,7 @@ export default function AdminDashboard() {
       toast.error('Erreur chargement secteurs');
     }
   };
-  
+
   const loadEvents = async () => {
     try {
       const response = await fetch('/api/events');
@@ -297,7 +257,7 @@ export default function AdminDashboard() {
       toast.error('Erreur chargement événements');
     }
   };
-  
+
   const loadAds = async () => {
     try {
       const response = await fetch('/api/ads');
@@ -309,7 +269,7 @@ export default function AdminDashboard() {
       toast.error('Erreur chargement annonces');
     }
   };
-  
+
   // ============================================
   // CRUD - COMMUNAUTÉS
   // ============================================
@@ -322,9 +282,9 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newCommunity)
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         toast.success('Communauté créée avec succès');
         setShowCreateCommunity(false);
@@ -340,7 +300,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   const updateCommunity = async () => {
     if (!editingItem) return;
     setActionLoading('update-community');
@@ -350,7 +310,7 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingItem)
       });
-      
+
       if (response.ok) {
         toast.success('Communauté mise à jour');
         setShowEditModal(false);
@@ -366,7 +326,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   const deleteCommunity = async (id: string) => {
     if (!confirm('Supprimer cette communauté ? Tous les secteurs liés seront également supprimés.')) return;
     setActionLoading(id);
@@ -374,7 +334,7 @@ export default function AdminDashboard() {
       const response = await fetch(`/api/communities/${id}`, {
         method: 'DELETE',
       });
-      
+
       if (response.ok) {
         toast.success('Communauté supprimée');
         loadCommunities();
@@ -388,38 +348,132 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
+
+
   // ============================================
   // CRUD - SECTEURS
   // ============================================
-  const createSector = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setActionLoading('create-sector');
-    try {
-      const response = await fetch('/api/admin/sectors/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newSector)
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        toast.success('Secteur créé avec succès');
-        setShowCreateSector(false);
-        setNewSector({ name: '', description: '', communityId: '', presidentPhone: '', presidentName: '', sendInvitation: true });
-        loadSectors();
-      } else {
-        toast.error(data.error || 'Erreur lors de la création');
-      }
-    } catch (error) {
-      console.error('Error creating sector:', error);
-      toast.error('Erreur serveur');
-    } finally {
-      setActionLoading(null);
-    }
-  };
+//  const createSector = async (e: React.FormEvent) => {
+//   e.preventDefault();
   
+//   setActionLoading('create-sector');
+//   try {
+//     const response = await fetch('/api/admin/sectors/create', {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify(newSector)
+//     });
+    
+//     const data = await response.json();
+    
+//     if (response.ok) {
+//       toast.success(`✅ Secteur "${newSector.name}" créé ! Mot de passe président: secteur123`);
+//       setShowCreateSector(false);
+//       setNewSector({ 
+//         name: '', 
+//         description: '', 
+//         communityId: '', 
+//         presidentPhone: '', 
+//         presidentName: '', 
+//         sendInvitation: true 
+//       });
+//       loadSectors();
+//     } else {
+//       toast.error(data.error || 'Erreur lors de la création');
+//     }
+//   } catch (error) {
+//     console.error('Error creating sector:', error);
+//     toast.error('Erreur serveur');
+//   } finally {
+//     setActionLoading(null);
+//   }
+// };
+
+
+
+
+
+
+
+const createSector = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setActionLoading('create-sector');
+  try {
+    const response = await fetch('/api/admin/sectors/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newSector)
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      if (data.sector?.tempPassword) {
+        // ✅ Nouveau président créé — afficher mot de passe à l'admin
+        toast.success(
+          `✅ Secteur "${data.sector.name}" créé !\n🔑 Mot de passe de ${newSector.presidentName} : ${data.sector.tempPassword}`,
+          { duration: 60000 } // visible 20 secondes
+        );
+      } else {
+        // Président existant — pas de nouveau mot de passe
+        toast.success(`✅ Secteur "${data.sector.name}" créé — président existant conservé`);
+      }
+
+      setShowCreateSector(false);
+      setNewSector({
+        name: '',
+        description: '',
+        communityId: '',
+        presidentPhone: '',
+        presidentName: '',
+        sendInvitation: true
+      });
+      loadSectors();
+    } else {
+      toast.error(data.error || 'Erreur lors de la création');
+    }
+  } catch (error) {
+    console.error('Error creating sector:', error);
+    toast.error('Erreur serveur');
+  } finally {
+    setActionLoading(null);
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // 🔥 AJOUTER CETTE FONCTION
   const updateSector = async () => {
     if (!editingItem) return;
     setActionLoading('update-sector');
@@ -427,16 +481,22 @@ export default function AdminDashboard() {
       const response = await fetch(`/api/admin/sectors/${editingItem._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editingItem)
+        body: JSON.stringify({
+          name: editingItem.name,
+          description: editingItem.description,
+          presidentPhone: editingItem.presidentPhone,
+          presidentName: editingItem.presidentName
+        })
       });
-      
+
       if (response.ok) {
         toast.success('Secteur mis à jour');
         setShowEditModal(false);
         setEditingItem(null);
         loadSectors();
       } else {
-        toast.error('Erreur lors de la mise à jour');
+        const data = await response.json();
+        toast.error(data.error || 'Erreur lors de la mise à jour');
       }
     } catch (error) {
       console.error('Error updating sector:', error);
@@ -445,7 +505,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   const deleteSector = async (id: string) => {
     if (!confirm('Supprimer ce secteur ? Tous les événements liés seront également supprimés.')) return;
     setActionLoading(id);
@@ -453,7 +513,7 @@ export default function AdminDashboard() {
       const response = await fetch(`/api/admin/sectors/${id}`, {
         method: 'DELETE',
       });
-      
+
       if (response.ok) {
         toast.success('Secteur supprimé');
         loadSectors();
@@ -467,7 +527,10 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
+
+
+
   // ============================================
   // CRUD - UTILISATEURS
   // ============================================
@@ -479,7 +542,7 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, role: newRole })
       });
-      
+
       if (response.ok) {
         toast.success('Rôle utilisateur mis à jour');
         loadUsers();
@@ -493,7 +556,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   const toggleUserRestriction = async (userId: string, isRestricted: boolean) => {
     setActionLoading(userId);
     try {
@@ -502,7 +565,7 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, isRestricted: !isRestricted })
       });
-      
+
       if (response.ok) {
         toast.success(`Utilisateur ${!isRestricted ? 'bloqué' : 'débloqué'}`);
         loadUsers();
@@ -516,7 +579,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   const deleteUser = async (userId: string) => {
     if (!confirm('Supprimer cet utilisateur ? Cette action est irréversible.')) return;
     setActionLoading(userId);
@@ -524,7 +587,7 @@ export default function AdminDashboard() {
       const response = await fetch(`/api/admin/users/${userId}`, {
         method: 'DELETE',
       });
-      
+
       if (response.ok) {
         toast.success('Utilisateur supprimé');
         loadUsers();
@@ -538,7 +601,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   // ============================================
   // CRUD - ÉVÉNEMENTS
   // ============================================
@@ -551,9 +614,9 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEvent)
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         toast.success('Événement créé avec succès');
         setShowCreateEvent(false);
@@ -569,7 +632,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   const updateEvent = async () => {
     if (!editingItem) return;
     setActionLoading('update-event');
@@ -579,7 +642,7 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingItem)
       });
-      
+
       if (response.ok) {
         toast.success('Événement mis à jour');
         setShowEditModal(false);
@@ -595,7 +658,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   const deleteEvent = async (eventId: string) => {
     if (!confirm('Supprimer cet événement ?')) return;
     setActionLoading(eventId);
@@ -603,7 +666,7 @@ export default function AdminDashboard() {
       const response = await fetch(`/api/events/${eventId}`, {
         method: 'DELETE',
       });
-      
+
       if (response.ok) {
         toast.success('Événement supprimé');
         loadEvents();
@@ -617,7 +680,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   // ============================================
   // CRUD - ANNONCES
   // ============================================
@@ -630,9 +693,9 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newAd)
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         toast.success('Annonce créée avec succès');
         setShowCreateAd(false);
@@ -648,7 +711,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   const updateAd = async () => {
     if (!editingItem) return;
     setActionLoading('update-ad');
@@ -658,7 +721,7 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingItem)
       });
-      
+
       if (response.ok) {
         toast.success('Annonce mise à jour');
         setShowEditModal(false);
@@ -674,7 +737,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   const deleteAd = async (adId: string) => {
     if (!confirm('Supprimer cette annonce ?')) return;
     setActionLoading(adId);
@@ -682,7 +745,7 @@ export default function AdminDashboard() {
       const response = await fetch(`/api/ads/${adId}`, {
         method: 'DELETE',
       });
-      
+
       if (response.ok) {
         toast.success('Annonce supprimée');
         loadAds();
@@ -696,7 +759,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   const toggleSponsor = async (adId: string, isSponsored: boolean) => {
     setActionLoading(adId);
     try {
@@ -705,7 +768,7 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ adId })
       });
-      
+
       if (response.ok) {
         toast.success(isSponsored ? 'Sponsor retiré' : 'Annonce sponsorisée');
         loadAds();
@@ -719,7 +782,7 @@ export default function AdminDashboard() {
       setActionLoading(null);
     }
   };
-  
+
   // ============================================
   // OPEN EDIT MODAL
   // ============================================
@@ -727,47 +790,47 @@ export default function AdminDashboard() {
     setEditingItem({ ...item, _type: type });
     setShowEditModal(true);
   };
-  
+
   const renderEditForm = () => {
     if (!editingItem) return null;
-    
+
     switch (editingItem._type) {
       case 'community':
         return (
           <div className="space-y-4">
-            <Input label="Nom" value={editingItem.name} onChange={(e) => setEditingItem({...editingItem, name: e.target.value})} />
-            <Input label="Pays" value={editingItem.country} onChange={(e) => setEditingItem({...editingItem, country: e.target.value})} />
-            {editingItem.type === 'city' && <Input label="Ville" value={editingItem.city || ''} onChange={(e) => setEditingItem({...editingItem, city: e.target.value})} />}
+            <Input label="Nom" value={editingItem.name} onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })} />
+            <Input label="Pays" value={editingItem.country} onChange={(e) => setEditingItem({ ...editingItem, country: e.target.value })} />
+            {editingItem.type === 'city' && <Input label="Ville" value={editingItem.city || ''} onChange={(e) => setEditingItem({ ...editingItem, city: e.target.value })} />}
             <div className="flex space-x-3 pt-4">
               <Button onClick={updateCommunity} disabled={actionLoading === 'update-community'}>Enregistrer</Button>
               <Button variant="secondary" onClick={() => setShowEditModal(false)}>Annuler</Button>
             </div>
           </div>
         );
-        
+
       case 'sector':
         return (
           <div className="space-y-4">
-            <Input label="Nom du secteur" value={editingItem.name} onChange={(e) => setEditingItem({...editingItem, name: e.target.value})} />
-            <Input label="Description" value={editingItem.description || ''} onChange={(e) => setEditingItem({...editingItem, description: e.target.value})} />
-            <Input label="Téléphone président" value={editingItem.presidentPhone} onChange={(e) => setEditingItem({...editingItem, presidentPhone: e.target.value})} />
-            <Input label="Nom président" value={editingItem.presidentName} onChange={(e) => setEditingItem({...editingItem, presidentName: e.target.value})} />
+            <Input label="Nom du secteur" value={editingItem.name} onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })} />
+            <Input label="Description" value={editingItem.description || ''} onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })} />
+            <Input label="Téléphone président" value={editingItem.presidentPhone} onChange={(e) => setEditingItem({ ...editingItem, presidentPhone: e.target.value })} />
+            <Input label="Nom président" value={editingItem.presidentName} onChange={(e) => setEditingItem({ ...editingItem, presidentName: e.target.value })} />
             <div className="flex space-x-3 pt-4">
               <Button onClick={updateSector} disabled={actionLoading === 'update-sector'}>Enregistrer</Button>
               <Button variant="secondary" onClick={() => setShowEditModal(false)}>Annuler</Button>
             </div>
           </div>
         );
-        
+
       case 'event':
         return (
           <div className="space-y-4">
-            <Input label="Titre" value={editingItem.title} onChange={(e) => setEditingItem({...editingItem, title: e.target.value})} />
-            <Input label="Description" value={editingItem.description} onChange={(e) => setEditingItem({...editingItem, description: e.target.value})} />
-            <Input label="Lieu" value={editingItem.location} onChange={(e) => setEditingItem({...editingItem, location: e.target.value})} />
-            <input type="datetime-local" value={editingItem.date?.slice(0, 16)} onChange={(e) => setEditingItem({...editingItem, date: e.target.value})} className="w-full px-3 py-2 border rounded-lg" />
+            <Input label="Titre" value={editingItem.title} onChange={(e) => setEditingItem({ ...editingItem, title: e.target.value })} />
+            <Input label="Description" value={editingItem.description} onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })} />
+            <Input label="Lieu" value={editingItem.location} onChange={(e) => setEditingItem({ ...editingItem, location: e.target.value })} />
+            <input type="datetime-local" value={editingItem.date?.slice(0, 16)} onChange={(e) => setEditingItem({ ...editingItem, date: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
             <div className="flex items-center space-x-2">
-              <input type="checkbox" checked={editingItem.is_boosted} onChange={(e) => setEditingItem({...editingItem, is_boosted: e.target.checked})} className="w-4 h-4" />
+              <input type="checkbox" checked={editingItem.is_boosted} onChange={(e) => setEditingItem({ ...editingItem, is_boosted: e.target.checked })} className="w-4 h-4" />
               <label>Événement boosté</label>
             </div>
             <div className="flex space-x-3 pt-4">
@@ -776,24 +839,24 @@ export default function AdminDashboard() {
             </div>
           </div>
         );
-        
+
       case 'ad':
         return (
           <div className="space-y-4">
-            <Input label="Titre" value={editingItem.title} onChange={(e) => setEditingItem({...editingItem, title: e.target.value})} />
-            <Input label="Contenu" value={editingItem.content} onChange={(e) => setEditingItem({...editingItem, content: e.target.value})} />
+            <Input label="Titre" value={editingItem.title} onChange={(e) => setEditingItem({ ...editingItem, title: e.target.value })} />
+            <Input label="Contenu" value={editingItem.content} onChange={(e) => setEditingItem({ ...editingItem, content: e.target.value })} />
             <div className="flex space-x-3 pt-4">
               <Button onClick={updateAd} disabled={actionLoading === 'update-ad'}>Enregistrer</Button>
               <Button variant="secondary" onClick={() => setShowEditModal(false)}>Annuler</Button>
             </div>
           </div>
         );
-        
+
       default:
         return null;
     }
   };
-  
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -801,10 +864,10 @@ export default function AdminDashboard() {
       </div>
     );
   }
-  
+
   const cities = communities.filter(c => c.type === 'city');
   const diasporaCountries = communities.filter(c => c.type === 'country');
-  
+
   return (
     <div className="space-y-6">
       {/* Navigation Tabs */}
@@ -817,7 +880,7 @@ export default function AdminDashboard() {
         <button onClick={() => setActiveTab('events')} className={`px-4 py-2 rounded-t-lg transition ${activeTab === 'events' ? 'bg-purple-600 text-white' : 'bg-gray-100'}`}>📅 Événements</button>
         <button onClick={() => setActiveTab('ads')} className={`px-4 py-2 rounded-t-lg transition ${activeTab === 'ads' ? 'bg-purple-600 text-white' : 'bg-gray-100'}`}>📢 Annonces</button>
       </div>
-      
+
       {/* ============================================ */}
       {/* DASHBOARD TAB */}
       {/* ============================================ */}
@@ -830,13 +893,23 @@ export default function AdminDashboard() {
           <Card className="p-4 text-center"><div className="text-3xl mb-2">📢</div><div className="text-2xl font-bold">{stats.totalAds}</div><div className="text-gray-600">Annonces</div></Card>
         </div>
       )}
-      
+
+
+
+
+
+
       {/* ============================================ */}
       {/* USERS TAB */}
       {/* ============================================ */}
       {activeTab === 'users' && (
         <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4">👥 Gestion des utilisateurs</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold">👥 Gestion des utilisateurs</h2>
+            <Button onClick={() => router.push('/admin/users/create')}>
+              + Créer un utilisateur
+            </Button>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50">
@@ -854,7 +927,12 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3">{user.name}</td>
                     <td className="px-4 py-3">{user.phone}</td>
                     <td className="px-4 py-3">
-                      <select value={user.role} onChange={(e) => updateUserRole(user._id, e.target.value)} className="px-2 py-1 border rounded text-sm" disabled={actionLoading === user._id}>
+                      <select
+                        value={user.role}
+                        onChange={(e) => updateUserRole(user._id, e.target.value)}
+                        className="px-2 py-1 border rounded text-sm"
+                        disabled={actionLoading === user._id}
+                      >
                         <option value="member">Membre</option>
                         <option value="sector_president">Président</option>
                         <option value="community_chief">Chef communauté</option>
@@ -868,7 +946,11 @@ export default function AdminDashboard() {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <Button size="sm" variant="danger" onClick={() => deleteUser(user._id)} disabled={actionLoading === user._id}>🗑️ Supprimer</Button>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="danger" onClick={() => deleteUser(user._id)} disabled={actionLoading === user._id}>
+                          🗑️ Supprimer
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -877,7 +959,7 @@ export default function AdminDashboard() {
           </div>
         </Card>
       )}
-      
+
       {/* ============================================ */}
       {/* COMMUNITIES TAB */}
       {/* ============================================ */}
@@ -887,20 +969,20 @@ export default function AdminDashboard() {
             <h2 className="text-xl font-bold">🌍 Gestion des communautés</h2>
             <Button onClick={() => setShowCreateCommunity(!showCreateCommunity)}>{showCreateCommunity ? 'Annuler' : '+ Créer'}</Button>
           </div>
-          
+
           {showCreateCommunity && (
             <form onSubmit={createCommunity} className="mb-6 p-4 bg-gray-50 rounded-lg space-y-4">
-              <Input label="Nom" value={newCommunity.name} onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})} required />
-              <select value={newCommunity.type} onChange={(e) => setNewCommunity({...newCommunity, type: e.target.value})} className="w-full px-3 py-2 border rounded-lg">
+              <Input label="Nom" value={newCommunity.name} onChange={(e) => setNewCommunity({ ...newCommunity, name: e.target.value })} required />
+              <select value={newCommunity.type} onChange={(e) => setNewCommunity({ ...newCommunity, type: e.target.value })} className="w-full px-3 py-2 border rounded-lg">
                 <option value="city">🏙️ Ville (Cameroun)</option>
                 <option value="country">🌍 Pays (Diaspora)</option>
               </select>
-              <Input label="Pays" value={newCommunity.country} onChange={(e) => setNewCommunity({...newCommunity, country: e.target.value})} required />
-              {newCommunity.type === 'city' && <Input label="Ville" value={newCommunity.city} onChange={(e) => setNewCommunity({...newCommunity, city: e.target.value})} />}
+              <Input label="Pays" value={newCommunity.country} onChange={(e) => setNewCommunity({ ...newCommunity, country: e.target.value })} required />
+              {newCommunity.type === 'city' && <Input label="Ville" value={newCommunity.city} onChange={(e) => setNewCommunity({ ...newCommunity, city: e.target.value })} />}
               <Button type="submit" disabled={actionLoading === 'community'}>Créer</Button>
             </form>
           )}
-          
+
           <div className="space-y-6">
             <div>
               <h3 className="font-semibold text-green-700 mb-2">🇨🇲 Villes ({cities.length})</h3>
@@ -929,7 +1011,7 @@ export default function AdminDashboard() {
           </div>
         </Card>
       )}
-      
+
       {/* ============================================ */}
       {/* CREATE SECTOR TAB */}
       {/* ============================================ */}
@@ -938,24 +1020,30 @@ export default function AdminDashboard() {
           <h2 className="text-xl font-bold mb-4">➕ Créer un secteur</h2>
           {cities.length === 0 ? <div className="bg-yellow-50 p-4 text-center">⚠️ Créez d'abord une ville</div> : (
             <form onSubmit={createSector} className="space-y-4 max-w-lg">
-              <Input label="Nom" value={newSector.name} onChange={(e) => setNewSector({...newSector, name: e.target.value})} required />
-              <textarea placeholder="Description" value={newSector.description} onChange={(e) => setNewSector({...newSector, description: e.target.value})} className="w-full px-3 py-2 border rounded-lg" rows={3} />
-              <select required value={newSector.communityId} onChange={(e) => setNewSector({...newSector, communityId: e.target.value})} className="w-full px-3 py-2 border rounded-lg">
+              <Input label="Nom" value={newSector.name} onChange={(e) => setNewSector({ ...newSector, name: e.target.value })} required />
+              <textarea placeholder="Description" value={newSector.description} onChange={(e) => setNewSector({ ...newSector, description: e.target.value })} className="w-full px-3 py-2 border rounded-lg" rows={3} />
+              <select required value={newSector.communityId} onChange={(e) => setNewSector({ ...newSector, communityId: e.target.value })} className="w-full px-3 py-2 border rounded-lg">
                 <option value="">Sélectionner une ville</option>
                 {cities.map(c => <option key={c._id} value={c._id}>📍 {c.name}</option>)}
               </select>
-              <Input label="Téléphone président" value={newSector.presidentPhone} onChange={(e) => setNewSector({...newSector, presidentPhone: e.target.value})} required />
-              <Input label="Nom président" value={newSector.presidentName} onChange={(e) => setNewSector({...newSector, presidentName: e.target.value})} required />
+
+              <Input label="Téléphone président" value={newSector.presidentPhone} onChange={(e) => setNewSector({ ...newSector, presidentPhone: e.target.value })} required />
+              <Input label="Nom président" value={newSector.presidentName} onChange={(e) => setNewSector({ ...newSector, presidentName: e.target.value })} required />
+
+              {/* 🔥 PLUS DE CHAMP MOT DE PASSE */}
+
               <div className="flex items-center space-x-2">
-                <input type="checkbox" checked={newSector.sendInvitation} onChange={(e) => setNewSector({...newSector, sendInvitation: e.target.checked})} className="w-4 h-4" />
+                <input type="checkbox" checked={newSector.sendInvitation} onChange={(e) => setNewSector({ ...newSector, sendInvitation: e.target.checked })} className="w-4 h-4" />
                 <label>Envoyer une invitation</label>
               </div>
-              <Button type="submit" disabled={actionLoading === 'create-sector'}>Créer</Button>
+
+              <Button type="submit" disabled={actionLoading === 'create-sector'}>
+                Créer le secteur
+              </Button>
             </form>
           )}
         </Card>
       )}
-      
       {/* ============================================ */}
       {/* ALL SECTORS TAB */}
       {/* ============================================ */}
@@ -995,7 +1083,7 @@ export default function AdminDashboard() {
           )}
         </Card>
       )}
-      
+
       {/* ============================================ */}
       {/* EVENTS TAB */}
       {/* ============================================ */}
@@ -1005,25 +1093,25 @@ export default function AdminDashboard() {
             <h2 className="text-xl font-bold">📅 Gestion des événements</h2>
             <Button onClick={() => setShowCreateEvent(!showCreateEvent)}>{showCreateEvent ? 'Annuler' : '+ Créer'}</Button>
           </div>
-          
+
           {showCreateEvent && (
             <form onSubmit={createEvent} className="mb-6 p-4 bg-gray-50 rounded-lg space-y-4">
-              <Input label="Titre" value={newEvent.title} onChange={(e) => setNewEvent({...newEvent, title: e.target.value})} required />
-              <textarea placeholder="Description" value={newEvent.description} onChange={(e) => setNewEvent({...newEvent, description: e.target.value})} className="w-full px-3 py-2 border rounded-lg" rows={3} />
-              <input type="datetime-local" value={newEvent.date} onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} className="w-full px-3 py-2 border rounded-lg" required />
-              <Input label="Lieu" value={newEvent.location} onChange={(e) => setNewEvent({...newEvent, location: e.target.value})} required />
-              <select value={newEvent.sectorId} onChange={(e) => setNewEvent({...newEvent, sectorId: e.target.value})} className="w-full px-3 py-2 border rounded-lg" required>
+              <Input label="Titre" value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
+              <textarea placeholder="Description" value={newEvent.description} onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })} className="w-full px-3 py-2 border rounded-lg" rows={3} />
+              <input type="datetime-local" value={newEvent.date} onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })} className="w-full px-3 py-2 border rounded-lg" required />
+              <Input label="Lieu" value={newEvent.location} onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })} required />
+              <select value={newEvent.sectorId} onChange={(e) => setNewEvent({ ...newEvent, sectorId: e.target.value })} className="w-full px-3 py-2 border rounded-lg" required>
                 <option value="">Sélectionner un secteur</option>
                 {sectors.map(s => <option key={s._id} value={s._id}>{s.name}</option>)}
               </select>
               <div className="flex items-center space-x-2">
-                <input type="checkbox" checked={newEvent.is_boosted} onChange={(e) => setNewEvent({...newEvent, is_boosted: e.target.checked})} className="w-4 h-4" />
+                <input type="checkbox" checked={newEvent.is_boosted} onChange={(e) => setNewEvent({ ...newEvent, is_boosted: e.target.checked })} className="w-4 h-4" />
                 <label>⭐ Booster</label>
               </div>
               <Button type="submit" disabled={actionLoading === 'event'}>Créer</Button>
             </form>
           )}
-          
+
           <div className="space-y-2">
             {events.map(e => (
               <div key={e._id} className={`p-3 border rounded-lg flex justify-between items-center ${e.is_boosted ? 'border-yellow-400 bg-yellow-50' : ''}`}>
@@ -1042,7 +1130,7 @@ export default function AdminDashboard() {
           </div>
         </Card>
       )}
-      
+
       {/* ============================================ */}
       {/* ADS TAB */}
       {/* ============================================ */}
@@ -1052,15 +1140,15 @@ export default function AdminDashboard() {
             <h2 className="text-xl font-bold">📢 Gestion des annonces</h2>
             <Button onClick={() => setShowCreateAd(!showCreateAd)}>{showCreateAd ? 'Annuler' : '+ Créer'}</Button>
           </div>
-          
+
           {showCreateAd && (
             <form onSubmit={createAd} className="mb-6 p-4 bg-gray-50 rounded-lg space-y-4">
-              <Input label="Titre" value={newAd.title} onChange={(e) => setNewAd({...newAd, title: e.target.value})} required />
-              <textarea placeholder="Contenu" value={newAd.content} onChange={(e) => setNewAd({...newAd, content: e.target.value})} className="w-full px-3 py-2 border rounded-lg" rows={3} required />
+              <Input label="Titre" value={newAd.title} onChange={(e) => setNewAd({ ...newAd, title: e.target.value })} required />
+              <textarea placeholder="Contenu" value={newAd.content} onChange={(e) => setNewAd({ ...newAd, content: e.target.value })} className="w-full px-3 py-2 border rounded-lg" rows={3} required />
               <Button type="submit" disabled={actionLoading === 'ad'}>Créer</Button>
             </form>
           )}
-          
+
           <div className="space-y-2">
             {ads.map(a => (
               <div key={a._id} className={`p-3 border rounded-lg flex justify-between items-center ${a.is_sponsored ? 'border-yellow-400 bg-yellow-50' : ''}`}>
@@ -1080,7 +1168,7 @@ export default function AdminDashboard() {
           </div>
         </Card>
       )}
-      
+
       {/* ============================================ */}
       {/* MODAL ÉDITION */}
       {/* ============================================ */}

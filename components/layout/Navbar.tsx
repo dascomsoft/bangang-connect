@@ -42,7 +42,7 @@ export default function Navbar({ user }: NavbarProps) {
   
   // ==================== DÉCONNEXION INSTANTANÉE ====================
   const handleLogout = () => {
-    setIsLoggingOut(true);
+    // setIsLoggingOut(true);
     
     // Fire & forget - ne pas attendre la réponse
     fetch('/api/auth/logout', { method: 'POST' }).catch(console.error);
@@ -104,7 +104,7 @@ export default function Navbar({ user }: NavbarProps) {
   
   // Version desktop/tablette - Navbar fixe en haut
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+    <nav className="fixed top-0 left-0 right-0 bg-slate-800 text-white shadow-md z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -124,22 +124,22 @@ export default function Navbar({ user }: NavbarProps) {
           {/* Menu Desktop */}
           <div className="hidden md:flex items-center space-x-6">
             {/* Liens publics */}
-            <Link href="/history" className="flex items-center gap-1 text-gray-700 hover:text-blue-600 transition">
+            <Link href="/history" className="flex items-center gap-1  hover:text-blue-600 transition">
               <FiBookOpen size={16} />
               <span>Histoire</span>
             </Link>
-            <Link href="/culture" className="flex items-center gap-1 text-gray-700 hover:text-blue-600 transition">
+            <Link href="/culture" className="flex items-center gap-1  hover:text-blue-600 transition">
               <FiMusic size={16} />
               <span>Culture</span>
             </Link>
-            <Link href="/news" className="flex items-center gap-1 text-gray-700 hover:text-blue-600 transition">
+            <Link href="/news" className="flex items-center gap-1  hover:text-blue-600 transition">
               <span>Actualités</span>
             </Link>
-            <Link href="/events" className="flex items-center gap-1 text-gray-700 hover:text-blue-600 transition">
+            <Link href="/events" className="flex items-center gap-1  hover:text-blue-600 transition">
               <FiCalendar size={16} />
               <span>Événements</span>
             </Link>
-            <Link href="/business" className="flex items-center gap-1 text-gray-700 hover:text-green-600 transition">
+            <Link href="/business" className="flex items-center gap-1  hover:text-green-600 transition">
               <FiBriefcase size={16} />
               <span>Business</span>
             </Link>
@@ -149,12 +149,12 @@ export default function Navbar({ user }: NavbarProps) {
                 <span className="w-px h-6 bg-gray-300"></span>
                 
                 {/* Dashboard dynamique selon le rôle */}
-                <Link href={dashboardLink} className="flex items-center gap-1 text-gray-700 hover:text-blue-600 transition">
+                <Link href={dashboardLink} className="flex items-center gap-1  hover:text-blue-600 transition">
                   {dashboardIcon}
                   <span>{dashboardLabel}</span>
                 </Link>
                 
-                <Link href="/chat" className="flex items-center gap-1 text-gray-700 hover:text-blue-600 transition">
+                <Link href="/chat" className="flex items-center gap-1  hover:text-blue-600 transition">
                   <MdChat size={18} />
                   <span>Chat</span>
                 </Link>
@@ -166,7 +166,7 @@ export default function Navbar({ user }: NavbarProps) {
                   className={`flex items-center gap-1 transition ${
                     isLoggingOut 
                       ? 'text-gray-400 cursor-not-allowed' 
-                      : 'text-red-600 hover:text-red-700'
+                      : 'text-red-600 bg-white p-2 font-extrabold rounded-md hover:text-red-700'
                   }`}
                 >
                   {isLoggingOut ? (
@@ -184,25 +184,17 @@ export default function Navbar({ user }: NavbarProps) {
               </>
             ) : (
               <>
-                <Link href="/login" className="flex items-center gap-1 text-gray-700 hover:text-blue-600 transition">
+                <Link href="/login" className="flex items-center gap-1  hover:text-blue-600 transition">
                   <FiLogIn size={16} />
                   <span>Connexion</span>
                 </Link>
-                <Link href="/register" className="flex items-center gap-1 text-gray-700 hover:text-blue-600 transition">
+                <Link href="/register" className="flex items-center gap-1  hover:text-blue-600 transition">
                   <FiUserPlus size={16} />
                   <span>Inscription</span>
                 </Link>
               </>
             )}
-            
-            {/* Sélecteur de langue */}
-            <button
-              onClick={() => setLanguage(language === 'fr' ? 'en' : 'fr')}
-              className="flex items-center gap-1 px-3 py-1 border rounded-lg hover:bg-gray-50 transition"
-            >
-              <FiGlobe size={14} />
-              <span className="text-sm font-medium">{language === 'fr' ? 'FR' : 'EN'}</span>
-            </button>
+          
           </div>
         </div>
       </div>

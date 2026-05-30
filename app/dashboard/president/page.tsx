@@ -51,6 +51,7 @@ interface Event {
   date: string;
   location: string;
   is_boosted: boolean;
+  sectorId: { _id: string; name: string };
   participants: Participant[];
 }
 
@@ -71,15 +72,15 @@ export default function PresidentDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [updatingProfile, setUpdatingProfile] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
-
-  // Pour le modal des participants
   const [selectedEventForParticipants, setSelectedEventForParticipants] = useState<{ id: string; title: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const [profileData, setProfileData] = useState({
     name: '',
     email: '',
     phone: '',
     photo: '',
+    currentPassword: '', 
     newPassword: ''
   });
 
@@ -90,25 +91,30 @@ export default function PresidentDashboard() {
   const loadData = async () => {
     try {
       setLoading(true);
+      setError(null);
       
+      console.log('🔵 1/5 - Chargement utilisateur...');
       const userRes = await fetch('/api/auth/me');
       if (!userRes.ok) {
+        console.error('🔴 Erreur auth:', userRes.status);
         router.push('/login');
         return;
       }
       const userData = await userRes.json();
       setUser(userData.user);
+      console.log('✅ Utilisateur chargé:', userData.user.name);
       
       setProfileData({
         name: userData.user.name || '',
         email: userData.user.email || '',
         phone: userData.user.phone || '',
         photo: userData.user.photo || '',
+        currentPassword: '', 
         newPassword: ''
       });
       
+      // Récupérer le sectorId
       let sectorId: string | null = null;
-      
       if (userData.user.sectorId) {
         if (typeof userData.user.sectorId === 'object') {
           sectorId = userData.user.sectorId._id;
@@ -118,52 +124,64 @@ export default function PresidentDashboard() {
       }
       
       if (!sectorId) {
+        console.error('🔴 Utilisateur sans secteur');
+        setError('Vous n\'êtes pas associé à un secteur. Contactez l\'administrateur.');
         setLoading(false);
         return;
       }
       
-      const [sectorRes, membersRes, requestsRes, eventsRes] = await Promise.all([
-        fetch(`/api/sectors/${sectorId}`),
-        fetch(`/api/sectors/${sectorId}/members`),
-        fetch(`/api/sectors/${sectorId}/requests`),
-        fetch(`/api/events`)
-      ]);
-      
-      let sectorData = null;
-      let membersData = [];
-      let requestsData = [];
-      let eventsData = [];
-      
-      if (sectorRes.ok) sectorData = await sectorRes.json();
-      if (membersRes.ok) membersData = await membersRes.json();
-      if (requestsRes.ok) requestsData = await requestsRes.json();
-      if (eventsRes.ok) eventsData = await eventsRes.json();
-      
-      if (sectorData) setSector(sectorData);
-      setMembers(Array.isArray(membersData) ? membersData : []);
-      setPendingRequests(Array.isArray(requestsData) ? requestsData : []);
-      
-      // Les participants sont déjà peuplés par l'API
-      if (Array.isArray(eventsData)) {
-        setEvents(eventsData);
-        console.log('✅ Événements chargés:', eventsData.map((e: any) => ({
-          title: e.title,
-          participantsCount: e.participants?.length || 0
-        })));
+      console.log('🔵 2/5 - Chargement secteur:', sectorId);
+      const sectorRes = await fetch(`/api/sectors/${sectorId}`);
+      if (sectorRes.ok) {
+        const sectorData = await sectorRes.json();
+        setSector(sectorData);
+        console.log('✅ Secteur chargé:', sectorData.name);
       } else {
-        setEvents([]);
+        console.error('🔴 Erreur secteur:', sectorRes.status);
+      }
+      
+      console.log('🔵 3/5 - Chargement membres...');
+      const membersRes = await fetch(`/api/sectors/${sectorId}/members`);
+      let membersData = [];
+      if (membersRes.ok) {
+        membersData = await membersRes.json();
+        setMembers(Array.isArray(membersData) ? membersData : []);
+        console.log('✅ Membres chargés:', membersData.length);
+      }
+      
+      console.log('🔵 4/5 - Chargement demandes...');
+      const requestsRes = await fetch(`/api/sectors/${sectorId}/requests`);
+      let requestsData = [];
+      if (requestsRes.ok) {
+        requestsData = await requestsRes.json();
+        setPendingRequests(Array.isArray(requestsData) ? requestsData : []);
+        console.log('✅ Demandes chargées:', requestsData.length);
+      }
+      
+      console.log('🔵 5/5 - Chargement événements...');
+      const eventsRes = await fetch(`/api/events`);
+      let eventsData = [];
+      if (eventsRes.ok) {
+        eventsData = await eventsRes.json();
+        // Filtrer les événements du secteur
+        const sectorEvents = eventsData.filter((e: any) => e.sectorId?._id === sectorId);
+        setEvents(sectorEvents);
+        console.log('✅ Événements chargés:', sectorEvents.length);
       }
       
       const upcoming = eventsData.filter((e: any) => new Date(e.date) > new Date()).length;
       setStats({
         totalMembers: membersData.length || 0,
-        totalEvents: eventsData.length || 0,
+        totalEvents: eventsData.filter((e: any) => e.sectorId?._id === sectorId).length,
         pendingRequests: requestsData.length || 0,
         upcomingEvents: upcoming
       });
       
+      console.log('✅ Toutes les données chargées !');
+      
     } catch (error) {
-      console.error('Error loading data:', error);
+      console.error('🔴 Error loading data:', error);
+      setError('Erreur de connexion au serveur');
       toast.error('Erreur de chargement');
     } finally {
       setLoading(false);
@@ -210,39 +228,63 @@ export default function PresidentDashboard() {
     }
   };
 
-  const handleUpdateProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setUpdatingProfile(true);
-    
-    try {
-      const passwordToSend = profileData.newPassword && profileData.newPassword.trim() !== '' 
-        ? profileData.newPassword 
-        : undefined;
-      
-      const response = await fetch('/api/users/update-profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: profileData.name,
-          email: profileData.email,
-          password: passwordToSend
-        })
-      });
-      
-      if (response.ok) {
-        toast.success('Profil mis à jour');
-        loadData();
-        setProfileData(prev => ({ ...prev, newPassword: '' }));
-      } else {
-        toast.error('Erreur lors de la mise à jour');
-      }
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      toast.error('Erreur serveur');
-    } finally {
+ // ✅ handleUpdateProfile corrigé
+const handleUpdateProfile = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setUpdatingProfile(true);
+
+  try {
+    // Validation côté client
+    if (profileData.newPassword && !profileData.currentPassword) {
+      toast.error('Entrez votre mot de passe actuel pour le changer');
       setUpdatingProfile(false);
+      return;
     }
-  };
+
+    if (profileData.newPassword && profileData.newPassword.length < 6) {
+      toast.error('Nouveau mot de passe trop court (minimum 6 caractères)');
+      setUpdatingProfile(false);
+      return;
+    }
+
+    const body: any = {
+      name: profileData.name,
+      email: profileData.email,
+    };
+
+    // N'envoyer les mots de passe que si l'utilisateur veut changer
+    if (profileData.newPassword) {
+      body.currentPassword = profileData.currentPassword;
+      body.newPassword = profileData.newPassword;
+    }
+
+    const response = await fetch('/api/users/update-profile', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      toast.success('Profil mis à jour avec succès');
+      loadData();
+      // Reset mots de passe uniquement
+      setProfileData(prev => ({
+        ...prev,
+        currentPassword: '',
+        newPassword: ''
+      }));
+    } else {
+      toast.error(data.error || 'Erreur lors de la mise à jour');
+    }
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    toast.error('Erreur serveur');
+  } finally {
+    setUpdatingProfile(false);
+  }
+};
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -292,22 +334,38 @@ export default function PresidentDashboard() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+          <div className="text-4xl mb-4">⚠️</div>
+          <h2 className="text-xl font-semibold text-red-700 mb-2">Erreur</h2>
+          <p className="text-red-600 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>Réessayer</Button>
+        </div>
+      </div>
+    );
+  }
+
   if (!sector) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500">Secteur non trouvé</p>
-        <button
-          onClick={() => router.push('/dashboard')}
-          className="mt-4 text-blue-600 hover:underline"
-        >
-          Retour au dashboard
-        </button>
+      <div className="container mx-auto px-4 py-8 text-center">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+          <p className="text-yellow-800">Secteur non trouvé</p>
+          <p className="text-sm text-gray-500 mt-2">Vous n'êtes pas associé à un secteur.</p>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="mt-4 text-blue-600 hover:underline"
+          >
+            Retour au dashboard
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className=" container max-w-20xl  px-4 py-16 space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-green-600 to-teal-600 rounded-2xl p-6 text-white">
         <h1 className="text-2xl font-bold">Dashboard Président</h1>
@@ -322,7 +380,7 @@ export default function PresidentDashboard() {
           <div className="text-gray-600">Membres</div>
         </Card>
         <Card className="p-4 text-center">
-          <div className="text-3xl mb-2"></div>
+          <div className="text-3xl mb-2">📅</div>
           <div className="text-2xl font-bold">{stats.totalEvents}</div>
           <div className="text-gray-600">Événements</div>
         </Card>
@@ -332,7 +390,7 @@ export default function PresidentDashboard() {
           <div className="text-gray-600">Demandes</div>
         </Card>
         <Card className="p-4 text-center">
-          <div className="text-3xl mb-2"></div>
+          <div className="text-3xl mb-2">📆</div>
           <div className="text-2xl font-bold">{stats.upcomingEvents}</div>
           <div className="text-gray-600">À venir</div>
         </Card>
@@ -370,7 +428,7 @@ export default function PresidentDashboard() {
             activeTab === 'events' ? 'bg-green-600 text-white' : 'bg-gray-100'
           }`}
         >
-          Événements
+          📅 Événements
         </button>
         <button
           onClick={() => setActiveTab('profile')}
@@ -386,7 +444,7 @@ export default function PresidentDashboard() {
       {activeTab === 'overview' && (
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="p-6">
-            <h3 className="text-lg font-bold mb-4">📊 Informations</h3>
+            <h3 className="text-lg font-bold mb-4">📊 Informations du secteur</h3>
             <p><strong>Nom:</strong> {sector.name}</p>
             <p><strong>Description:</strong> {sector.description || 'Aucune'}</p>
             <p><strong>Communauté:</strong> {sector.communityId?.name}</p>
@@ -464,130 +522,160 @@ export default function PresidentDashboard() {
 
       {/* Events Tab */}
       {activeTab === 'events' && (
-  <Card className="p-6">
-    <div className="flex justify-between items-center mb-4">
-      <h3 className="text-lg font-bold">📅 Événements du secteur</h3>
-      <Button size="sm" onClick={() => router.push('/events')}>+ Créer</Button>
-    </div>
-    
-    {events.length === 0 ? (
-      <p className="text-gray-500 text-center py-8">Aucun événement</p>
-    ) : (
-      <div className="space-y-4">
-        {events.map((event: any) => (
-          <div key={event._id} className="border rounded-lg p-4 flex justify-between items-center">
-            <div>
-              <h4 className="font-bold">{event.title}</h4>
-                 <p className="text-xs text-blue-600 mt-1">
-                 🏘️ {event.sectorId?.name || 'Secteur inconnu'}
-                </p>
-              <p className="text-sm text-gray-600">{event.location}</p>
-              <p className="text-xs text-gray-500">
-                {new Date(event.date).toLocaleDateString()}
-              </p>
-              <p className="text-sm mt-2">👥 {event.participants?.length || 0} participants</p>
-            </div>
-            <Button 
-              variant="secondary"
-              onClick={() => {
-                setSelectedEventForParticipants({
-                  id: event._id,
-                  title: event.title
-                });
-              }}
-            >
-              Voir tout
-            </Button>
-          </div>
-        ))}
-      </div>
-    )}
-  </Card>
-)}
-
-      {/* Profile Tab */}
-      {activeTab === 'profile' && (
         <Card className="p-6">
-          <h3 className="text-lg font-bold mb-4">👤 Modifier mon profil</h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-bold">📅 Événements du secteur</h3>
+            <Button size="sm" onClick={() => router.push('/events')}>+ Créer</Button>
+          </div>
           
-          {updatingProfile ? (
-            <div className="text-center py-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            </div>
+          {events.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">Aucun événement</p>
           ) : (
-            <form onSubmit={handleUpdateProfile} className="space-y-4 max-w-lg">
-              <div>
-                <label className="block text-sm font-medium mb-1">Photo de profil</label>
-                <div className="flex items-center space-x-4">
-                  <img
-                    src={profileData.photo || '/default-avatar.png'}
-                    alt="Photo"
-                    className="w-20 h-20 rounded-full object-cover border-2 border-blue-500"
-                  />
-                  <label className="cursor-pointer bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200">
-                    {uploadingPhoto ? 'Upload...' : 'Changer la photo'}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handlePhotoUpload}
-                      disabled={uploadingPhoto}
-                    />
-                  </label>
+            <div className="space-y-4">
+              {events.map((event) => (
+                <div key={event._id} className="border rounded-lg p-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="font-bold">{event.title}</h4>
+                      <p className="text-sm text-gray-600">{event.location}</p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(event.date).toLocaleDateString()}
+                      </p>
+                      <p className="text-sm mt-2">👥 {event.participants?.length || 0} participants</p>
+                    </div>
+                    <Button 
+                      variant="secondary"
+                      onClick={() => {
+                        setSelectedEventForParticipants({
+                          id: event._id,
+                          title: event.title
+                        });
+                      }}
+                    >
+                      Voir participants
+                    </Button>
+                  </div>
                 </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Nom complet</label>
-                <input
-                  type="text"
-                  value={profileData.name}
-                  onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
-                <input
-                  type="email"
-                  value={profileData.email}
-                  onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Téléphone</label>
-                <input
-                  type="tel"
-                  value={profileData.phone}
-                  disabled
-                  className="w-full px-3 py-2 border rounded-lg bg-gray-100"
-                />
-                <p className="text-xs text-gray-500 mt-1">Le numéro de téléphone ne peut pas être modifié</p>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Nouveau mot de passe</label>
-                <input
-                  type="password"
-                  value={profileData.newPassword}
-                  onChange={(e) => setProfileData({ ...profileData, newPassword: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  placeholder="Laisser vide pour ne pas changer"
-                />
-                <p className="text-xs text-gray-500 mt-1">Minimum 6 caractères</p>
-              </div>
-              
-              <div className="flex space-x-3 pt-4">
-                <Button type="submit">💾 Enregistrer</Button>
-              </div>
-            </form>
+              ))}
+            </div>
           )}
         </Card>
       )}
+
+      {/* Profile Tab */}
+   {/* ✅ Profile Tab — form complet avec currentPassword */}
+{activeTab === 'profile' && (
+  <Card className="p-6">
+    <h3 className="text-lg font-bold mb-4">👤 Modifier mon profil</h3>
+
+    <form onSubmit={handleUpdateProfile} className="space-y-4 max-w-lg">
+      {/* Photo */}
+      <div>
+        <label className="block text-sm font-medium mb-1">Photo de profil</label>
+        <div className="flex items-center space-x-4">
+          <img
+            src={profileData.photo || '/default-avatar.png'}
+            alt="Photo"
+            className="w-20 h-20 rounded-full object-cover border-2 border-green-500"
+          />
+          <label className="cursor-pointer bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200">
+            {uploadingPhoto ? 'Upload...' : 'Changer la photo'}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handlePhotoUpload}
+              disabled={uploadingPhoto}
+            />
+          </label>
+        </div>
+      </div>
+
+      {/* Nom */}
+      <div>
+        <label className="block text-sm font-medium mb-1">Nom complet</label>
+        <input
+          type="text"
+          value={profileData.name}
+          onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+          className="w-full px-3 py-2 border rounded-lg"
+          required
+        />
+      </div>
+
+      {/* Email */}
+      <div>
+        <label className="block text-sm font-medium mb-1">Email</label>
+        <input
+          type="email"
+          value={profileData.email}
+          onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+          className="w-full px-3 py-2 border rounded-lg"
+        />
+      </div>
+
+      {/* Téléphone — non modifiable */}
+      <div>
+        <label className="block text-sm font-medium mb-1">Téléphone</label>
+        <input
+          type="tel"
+          value={profileData.phone}
+          disabled
+          className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-500"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Le numéro de téléphone ne peut pas être modifié
+        </p>
+      </div>
+
+      {/* Séparateur changement mot de passe */}
+      <div className="border-t pt-4">
+        <p className="text-sm font-semibold text-gray-700 mb-3">
+          🔑 Changer le mot de passe (optionnel)
+        </p>
+
+        {/* Mot de passe actuel */}
+        <div className="mb-3">
+          <label className="block text-sm font-medium mb-1">
+            Mot de passe actuel
+          </label>
+          <input
+            type="password"
+            value={profileData.currentPassword}
+            onChange={(e) => setProfileData({ ...profileData, currentPassword: e.target.value })}
+            className="w-full px-3 py-2 border rounded-lg"
+            placeholder="Votre mot de passe actuel"
+            autoComplete="current-password"
+          />
+        </div>
+
+        {/* Nouveau mot de passe */}
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            Nouveau mot de passe
+          </label>
+          <input
+            type="password"
+            value={profileData.newPassword}
+            onChange={(e) => setProfileData({ ...profileData, newPassword: e.target.value })}
+            className="w-full px-3 py-2 border rounded-lg"
+            placeholder="Minimum 6 caractères"
+            autoComplete="new-password"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Laisser vide pour ne pas changer le mot de passe
+          </p>
+        </div>
+      </div>
+
+      <div className="flex space-x-3 pt-2">
+        <Button type="submit" disabled={updatingProfile}>
+          {updatingProfile ? 'Enregistrement...' : '💾 Enregistrer'}
+        </Button>
+      </div>
+    </form>
+  </Card>
+)}
 
       {/* Modal Participants */}
       {selectedEventForParticipants && (
@@ -600,3 +688,16 @@ export default function PresidentDashboard() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

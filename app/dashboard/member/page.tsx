@@ -47,7 +47,7 @@ export default function MemberDashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
-  
+
   // États pour la modification du profil
   const [updatingProfile, setUpdatingProfile] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -66,7 +66,7 @@ export default function MemberDashboard() {
   const loadData = async () => {
     try {
       setLoading(true);
-      
+
       const userRes = await fetch('/api/auth/me');
       if (!userRes.ok) {
         router.push('/login');
@@ -74,7 +74,7 @@ export default function MemberDashboard() {
       }
       const userData = await userRes.json();
       setUser(userData.user);
-      
+
       // Initialiser les données du profil
       setProfileData({
         name: userData.user.name || '',
@@ -83,31 +83,31 @@ export default function MemberDashboard() {
         photo: userData.user.photo || '',
         newPassword: ''
       });
-      
+
       // Charger les événements
       const eventsRes = await fetch('/api/events');
       const eventsData = await eventsRes.json();
       setEvents(Array.isArray(eventsData) ? eventsData : []);
-      
+
       // Charger les annonces
       const adsRes = await fetch('/api/ads');
       const adsData = await adsRes.json();
       setAds(Array.isArray(adsData) ? adsData : []);
-      
+
       // Calculer les stats
-      const participated = eventsData.filter((e: Event) => 
+      const participated = eventsData.filter((e: Event) =>
         e.participants?.includes(userData.user._id)
       ).length;
-      
-      const upcoming = eventsData.filter((e: Event) => 
+
+      const upcoming = eventsData.filter((e: Event) =>
         new Date(e.date) > new Date()
       ).length;
-      
+
       setStats({
         participatedEvents: participated,
         upcomingEvents: upcoming
       });
-      
+
     } catch (error) {
       console.error('Error loading dashboard:', error);
       toast.error('Erreur de chargement');
@@ -121,7 +121,7 @@ export default function MemberDashboard() {
       const response = await fetch(`/api/events/${eventId}/participate`, {
         method: 'POST'
       });
-      
+
       if (response.ok) {
         toast.success('Participation mise à jour');
         loadData();
@@ -138,13 +138,13 @@ export default function MemberDashboard() {
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setUpdatingProfile(true);
-    
+
     try {
       // 🔥 Correction : envoyer undefined si vide, pas une string vide
-      const passwordToSend = profileData.newPassword && profileData.newPassword.trim() !== '' 
-        ? profileData.newPassword 
+      const passwordToSend = profileData.newPassword && profileData.newPassword.trim() !== ''
+        ? profileData.newPassword
         : undefined;
-      
+
       const response = await fetch('/api/users/update-profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -154,7 +154,7 @@ export default function MemberDashboard() {
           password: passwordToSend
         })
       });
-      
+
       if (response.ok) {
         toast.success('Profil mis à jour');
         loadData();
@@ -174,27 +174,27 @@ export default function MemberDashboard() {
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     if (!file.type.startsWith('image/')) {
       toast.error('Veuillez sélectionner une image');
       return;
     }
-    
+
     if (file.size > 2 * 1024 * 1024) {
       toast.error('L\'image ne doit pas dépasser 2MB');
       return;
     }
-    
+
     setUploadingPhoto(true);
     const formData = new FormData();
     formData.append('file', file);
-    
+
     try {
       const response = await fetch('/api/users/upload-photo', {
         method: 'POST',
         body: formData
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setProfileData(prev => ({ ...prev, photo: data.photoUrl }));
@@ -212,20 +212,20 @@ export default function MemberDashboard() {
   };
 
   const isParticipating = (event: Event): boolean => {
-  try {
-    if (!user || !user._id) return false;
-    if (!event.participants || !Array.isArray(event.participants)) return false;
-    return event.participants.includes(user._id);
-  } catch (error) {
-    console.error('Error checking participation:', error);
-    return false;
-  }
-};
+    try {
+      if (!user || !user._id) return false;
+      if (!event.participants || !Array.isArray(event.participants)) return false;
+      return event.participants.includes(user._id);
+    } catch (error) {
+      console.error('Error checking participation:', error);
+      return false;
+    }
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto px-4 space-y-10 py-24">
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-yellow-600 rounded-2xl p-6 text-white">
+      <div className="bg-slate-600 rounded-2xl p-6 text-white">
         <div className="flex items-center space-x-4">
           <img
             src={user?.photo || '/default-avatar.png'}
@@ -246,17 +246,15 @@ export default function MemberDashboard() {
       <div className="flex flex-wrap gap-2 border-b">
         <button
           onClick={() => setActiveTab('overview')}
-          className={`px-4 py-2 rounded-t-lg transition ${
-            activeTab === 'overview' ? 'bg-green-600 text-white' : 'bg-gray-100'
-          }`}
+          className={`px-4 py-2 rounded-t-lg transition ${activeTab === 'overview' ? 'bg-slate-600 text-white' : 'bg-gray-100'
+            }`}
         >
           📊 Aperçu
         </button>
         <button
           onClick={() => setActiveTab('profile')}
-          className={`px-4 py-2 rounded-t-lg transition ${
-            activeTab === 'profile' ? 'bg-green-600 text-white' : 'bg-gray-100'
-          }`}
+          className={`px-4 py-2 rounded-t-lg transition ${activeTab === 'profile' ? 'bg-slate-600 text-white' : 'bg-gray-100'
+            }`}
         >
           👤 Mon profil
         </button>
@@ -317,16 +315,16 @@ export default function MemberDashboard() {
                         </span>
                       )}
                       <h3 className="font-bold text-lg">{event.title}</h3>
-                         <p className="text-md text-blue-600 mt-1">
-                          🏘️ {event.sectorId?.name || 'Secteur inconnu'}
-                          </p>
+                      <p className="text-md text-blue-600 mt-1">
+                        🏘️ {event.sectorId?.name || 'Secteur inconnu'}
+                      </p>
                       <p className="text-gray-600 text-sm">{event.location}</p>
                       <p className="text-gray-500 text-xs">
                         {new Date(event.date).toLocaleDateString('fr-FR')} à {new Date(event.date).toLocaleTimeString('fr-FR')}
                       </p>
                       <Button
                         size="sm"
-                        className="mt-3 bg-green-400"
+                        className="mt-3 bg-slate-600"
                         variant={isParticipating(event) ? "secondary" : "primary"}
                         onClick={() => handleParticipate(event._id)}
                       >
@@ -364,7 +362,7 @@ export default function MemberDashboard() {
       {activeTab === 'profile' && (
         <Card className="p-6">
           <h3 className="text-lg font-bold mb-4">👤 Modifier mon profil</h3>
-          
+
           {updatingProfile ? (
             <div className="text-center py-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
@@ -392,7 +390,7 @@ export default function MemberDashboard() {
                   </label>
                 </div>
               </div>
-              
+
               {/* Nom */}
               <div>
                 <label className="block text-sm font-medium mb-1">Nom complet</label>
@@ -404,7 +402,7 @@ export default function MemberDashboard() {
                   required
                 />
               </div>
-              
+
               {/* Email */}
               <div>
                 <label className="block text-sm font-medium mb-1">Email</label>
@@ -415,7 +413,7 @@ export default function MemberDashboard() {
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              
+
               {/* Téléphone */}
               <div>
                 <label className="block text-sm font-medium mb-1">Téléphone</label>
@@ -427,7 +425,7 @@ export default function MemberDashboard() {
                 />
                 <p className="text-xs text-gray-500 mt-1">Le numéro de téléphone ne peut pas être modifié</p>
               </div>
-              
+
               {/* Nouveau mot de passe */}
               <div>
                 <label className="block text-sm font-medium mb-1">Nouveau mot de passe</label>
@@ -440,7 +438,7 @@ export default function MemberDashboard() {
                 />
                 <p className="text-xs text-gray-500 mt-1">Minimum 6 caractères</p>
               </div>
-              
+
               <div className="flex space-x-3 pt-4">
                 <Button type="submit">💾 Enregistrer les modifications</Button>
               </div>
