@@ -2194,12 +2194,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { GiCrown, GiAfrica, GiKingdom, GiFamilyHouse } from 'react-icons/gi';
+import { GiCrown, GiAfrica, GiFamilyHouse } from 'react-icons/gi';
 
 import { 
   FiUsers, FiMapPin, FiRadio, FiCalendar, FiBriefcase, 
   FiMessageCircle, FiInfo, FiTrendingUp, FiHeart, FiGlobe,
-  FiBookOpen, FiMusic, FiStar, FiShield, FiCrown, FiFeather,
+  FiBookOpen, FiMusic, FiStar, FiShield , FiFeather,
   FiCompass, FiAward, FiCheckCircle, FiPlay, FiArrowRight,
   FiMail, FiPhone, FiClock
 } from 'react-icons/fi';

@@ -559,9 +559,9 @@ import ChatBox from '@/components/ChatBox';
 import { toast } from 'react-hot-toast';
 import { 
   FiMessageCircle, FiUsers, FiShield, FiAlertCircle, 
-  FiLock, FiChevronRight, FiHome, FiStar, FiCrown
+  FiLock, FiChevronRight, FiHome, FiStar,
 } from 'react-icons/fi';
-import { GiCrown, GiKingdom } from 'react-icons/gi';
+import { GiCrown} from 'react-icons/gi';
 
 interface Sector {
   _id: string;

@@ -478,7 +478,7 @@ import {
   FiArrowRight, FiCamera, FiEdit2, FiLogOut, FiHome,
   FiBriefcase, FiMessageCircle, FiBell, FiSettings
 } from 'react-icons/fi';
-import { GiCrown, GiKingdom } from 'react-icons/gi';
+import { GiCrown } from 'react-icons/gi';
 import { MdDashboard, MdEvent, MdAdsClick } from 'react-icons/md';
 
 interface User {

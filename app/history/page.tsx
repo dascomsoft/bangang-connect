@@ -378,7 +378,7 @@ import {
   FaRoad, FaMountain, FaGlobeAfrica, FaRegClock,
   FaTree, FaWater, FaHandsHelping, FaRegBuilding
 } from 'react-icons/fa';
-import { GiVillage, GiAfrica, GiDiamondCrown, GiCrown, GiKing } from 'react-icons/gi';
+import { GiVillage, GiAfrica, GiCrown, GiKing } from 'react-icons/gi';
 import { FiMapPin, FiCalendar, FiBookOpen, FiUsers, FiShield } from 'react-icons/fi';
 
 // ─── Composants ──────────────────────────────────────────────

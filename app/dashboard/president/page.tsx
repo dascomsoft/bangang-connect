@@ -729,7 +729,7 @@ import {
   FiXCircle, FiPlus, FiArrowRight, FiStar, FiShield,
   FiBriefcase, FiHome, FiMapPin, FiTrendingUp, FiAward
 } from 'react-icons/fi';
-import { GiCrown, GiKingdom } from 'react-icons/gi';
+import { GiCrown} from 'react-icons/gi';
 
 interface Sector {
   _id: string;

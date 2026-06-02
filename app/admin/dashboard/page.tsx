@@ -1168,12 +1168,12 @@ import { toast } from 'react-hot-toast';
 import { 
   FiUsers, FiGlobe, FiGrid, FiCalendar, FiVolume2, 
   FiPlus, FiEdit2, FiTrash2, FiX, FiChevronRight,
-  FiShield, FiCrown, FiStar, FiMapPin, FiMail, FiPhone,
+  FiShield, FiStar, FiMapPin, FiMail, FiPhone,
   FiCheckCircle, FiAlertCircle, FiTrendingUp, FiAward,
   FiBriefcase, FiHome, FiUserPlus, FiUserMinus, FiRefreshCw
 } from 'react-icons/fi';
 import { MdDashboard, MdAdminPanelSettings, MdPeople, MdEvent, MdAdsClick } from 'react-icons/md';
-import { GiCrown, GiKingdom } from 'react-icons/gi';
+import { GiCrown} from 'react-icons/gi';
 
 // ============================================
 // TYPES

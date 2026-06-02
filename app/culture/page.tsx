@@ -321,7 +321,7 @@ import {
   FaBroadcastTower, FaDrum, FaHands, FaBookOpen, FaPalette,
   FaTree, FaMountain, FaFeather, FaRegSun
 } from 'react-icons/fa';
-import { GiAfrica, GiDiamondCrown, GiDrum, GiMask } from 'react-icons/gi';
+import { GiAfrica, GiDrum} from 'react-icons/gi';
 import { FiShield, FiHeart, FiStar, FiGlobe } from 'react-icons/fi';
 
 // ─── Composants ──────────────────────────────────────────────
