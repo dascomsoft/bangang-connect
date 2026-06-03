@@ -181,7 +181,7 @@ export default function Layout({
     <div className="min-h-screen bg-gray-100 overflow-x-hidden flex flex-col">
       <Navbar user={user} />
 
-      <div className="flex flex-1 pt-16">
+      <div className="flex flex-1 ">
         {user && <Sidebar user={user} />}
 
         <main
@@ -190,7 +190,9 @@ export default function Layout({
           }`}
         >
           <div className="w-full">
+          <div className="">
             {children}
+          </div>
           </div>
         </main>
       </div>
