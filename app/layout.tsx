@@ -217,7 +217,6 @@
 
 
 
-
 // app/layout.tsx
 
 import type { Metadata, Viewport } from "next";
@@ -231,8 +230,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://bangang-connect.vercel.app"),
 
   title: {
-    default:
-      "Bangang Connect | Réseau mondial des fils et filles Bangang",
+    default: "Bangang Connect | Réseau mondial des fils et filles Bangang",
     template: "%s | Bangang Connect",
   },
 
@@ -240,48 +238,23 @@ export const metadata: Metadata = {
     "Bangang Connect est la plateforme numérique officielle qui rassemble les fils et filles Bangang vivant au Cameroun et dans la diaspora mondiale. Culture, patrimoine, événements, opportunités, entraide et développement communautaire.",
 
   keywords: [
-    "Bangang",
-    "Bangang Connect",
-    "Diaspora Bangang",
-    "Communauté Bangang",
-    "Bangang Cameroun",
-    "Village Bangang",
-    "Culture Bangang",
-    "Patrimoine Bangang",
-    "Chefferie Bangang",
-    "Bamiléké",
-    "Diaspora camerounaise",
-    "Bangang France",
-    "Bangang Belgique",
-    "Bangang Canada",
-    "Bangang USA",
-    "Bangang Allemagne",
-    "Bangang Royaume-Uni",
-    "Investir à Bangang",
-    "Développement communautaire",
-    "Événements Bangang",
-    "Association Bangang",
-    "Fils et filles Bangang",
-    "Réseau Bangang",
-    "Culture camerounaise",
+    "Bangang", "Bangang Connect", "Diaspora Bangang", "Communauté Bangang",
+    "Bangang Cameroun", "Village Bangang", "Culture Bangang", "Patrimoine Bangang",
+    "Chefferie Bangang", "Bamiléké", "Diaspora camerounaise", "Bangang France",
+    "Bangang Belgique", "Bangang Canada", "Bangang USA", "Bangang Allemagne",
+    "Bangang Royaume-Uni", "Investir à Bangang", "Développement communautaire",
+    "Événements Bangang", "Association Bangang", "Fils et filles Bangang",
+    "Réseau Bangang", "Culture camerounaise",
   ],
 
-  authors: [
-    {
-      name: "Bangang Connect",
-    },
-  ],
-
+  authors: [{ name: "Bangang Connect" }],
   creator: "Bangang Connect",
-
   publisher: "Bangang Connect",
-
   category: "Community Platform",
 
   robots: {
     index: true,
     follow: true,
-
     googleBot: {
       index: true,
       follow: true,
@@ -299,20 +272,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fr_FR",
-
     url: "https://bangang-connect.vercel.app",
-
     siteName: "Bangang Connect",
-
-    title:
-      "Bangang Connect | Réseau mondial des fils et filles Bangang",
-
+    title: "Bangang Connect | Réseau mondial des fils et filles Bangang",
     description:
       "La plateforme numérique qui connecte la communauté Bangang au Cameroun et dans la diaspora mondiale.",
-
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/banganglogo.png",
         width: 1200,
         height: 630,
         alt: "Bangang Connect",
@@ -322,20 +289,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-
-    title:
-      "Bangang Connect | Réseau mondial des fils et filles Bangang",
-
-    description:
-      "Connecter la communauté Bangang à travers le monde.",
-
-    images: ["/og-image.jpg"],
-  },
-
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/apple-icon.png",
+    title: "Bangang Connect | Réseau mondial des fils et filles Bangang",
+    description: "Connecter la communauté Bangang à travers le monde.",
+    images: ["/banganglogo.png"],
   },
 };
 
@@ -348,34 +304,18 @@ export const viewport: Viewport = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-
   name: "Bangang Connect",
-
   url: "https://bangang-connect.vercel.app",
-
-  logo: "https://bangang-connect.vercel.app/logo.png",
-
+  logo: "https://bangang-connect.vercel.app/banganglogo.png",
   description:
     "Plateforme mondiale reliant les fils et filles Bangang vivant au Cameroun et dans la diaspora.",
-
   areaServed: [
-    "Cameroon",
-    "France",
-    "Belgium",
-    "Canada",
-    "United States",
-    "Germany",
-    "United Kingdom",
-    "Switzerland",
+    "Cameroon", "France", "Belgium", "Canada",
+    "United States", "Germany", "United Kingdom", "Switzerland",
   ],
-
   keywords: [
-    "Bangang",
-    "Diaspora Bangang",
-    "Communauté Bangang",
-    "Culture Bangang",
+    "Bangang", "Diaspora Bangang", "Communauté Bangang", "Culture Bangang",
   ],
-
   sameAs: [],
 };
 
@@ -386,6 +326,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
+      <head>
+        <link rel="icon" href="/banganglogo.png" type="image/png" />
+        <link rel="shortcut icon" href="/banganglogo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/banganglogo.png" />
+      </head>
       <body>
         <script
           type="application/ld+json"

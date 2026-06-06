@@ -141,7 +141,7 @@ export default function CommunityPage() {
   }
   
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
+    <div className="container mx-auto px-4 py-36 space-y-8">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white">
         <h1 className="text-3xl font-bold mb-2">🌍 Communautés Bangang</h1>

@@ -144,12 +144,12 @@ export default function EventsPage() {
   }
   
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
+    <div className="container mx-auto px-4 py-36 space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white">
+      <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-8 text-white">
         <div className="flex justify-between items-center flex-wrap gap-4">
           <div>
-            <h1 className="text-3xl font-bold mb-2">📅 Événements</h1>
+            <h1 className="text-3xl font-bold mb-2">Événements</h1>
             <p className="text-blue-100">
               Découvrez et participez aux événements de votre communauté
             </p>
@@ -246,7 +246,7 @@ export default function EventsPage() {
       {/* Liste des événements */}
       {events.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-xl">
-          <div className="text-6xl mb-4">📅</div>
+          <div className="text-6xl mb-4"></div>
           <h2 className="text-xl font-semibold text-gray-900 mb-2">
             Aucun événement pour le moment
           </h2>

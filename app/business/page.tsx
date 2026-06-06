@@ -1068,16 +1068,39 @@ export default function BusinessPage() {
     }
   };
   
-  const fetchBusinesses = async () => {
-    try {
-      const res = await fetch(`/api/businesses?category=${selectedCategory}&search=${searchTerm}`);
-      const data = await res.json();
-      const approvedBusinesses = data.filter((b: Business) => b.status === 'approved');
-      setBusinesses(approvedBusinesses);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const fetchBusinesses = async () => {
+  //   try {
+  //     const res = await fetch(`/api/businesses?category=${selectedCategory}&search=${searchTerm}`);
+  //     const data = await res.json();
+  //     const approvedBusinesses = data.filter((b: Business) => b.status === 'approved');
+  //     setBusinesses(approvedBusinesses);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+
+
+
+const fetchBusinesses = async () => {
+  try {
+    const res = await fetch(`/api/businesses?category=${selectedCategory}&search=${searchTerm}`);
+    const data = await res.json();
+    // 🔥 SOLUTION RAPIDE : Afficher toutes les entreprises (sans filtre)
+    // const approvedBusinesses = data.filter((b: Business) => b.status === 'approved');
+    // setBusinesses(approvedBusinesses);
+    setBusinesses(data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+
+
+
+
+
   
   const fetchJobs = async () => {
     try {

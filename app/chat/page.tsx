@@ -794,11 +794,11 @@ export default function ChatPage() {
   };
   
   return (
-    <div className="min-h-screen bg-[#F4F0E8] font-sans py-24">
+    <div className="min-h-screen bg-[#F4F0E8] font-sans py-32">
       <div className="container mx-auto px-4">
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Header */}
-          <div className={`bg-gradient-to-r ${getRoleColor()} rounded-2xl p-6 text-white shadow-xl`}>
+          <div className=" bg-slate-800 rounded-2xl p-6 text-white shadow-xl">
             <div className="flex items-center gap-3 mb-2">
               {getRoleIcon()}
               <h1 className="font-serif text-2xl font-bold">Chat</h1>

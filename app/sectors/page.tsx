@@ -82,10 +82,10 @@ export default function SectorsPage() {
   }
   
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
+    <div className="container mx-auto px-4 py-36 space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white">
-        <h1 className="text-3xl font-bold mb-2">🏘️ Nos Secteurs</h1>
+      <div className="bg-gradient-to-r from-slate-600 to-slate-950 rounded-2xl p-8 text-white">
+        <h1 className="text-3xl font-bold mb-2"> Nos Secteurs</h1>
         <p className="text-blue-100">
           Rejoignez le secteur de votre ville ou pays pour participer aux activités
         </p>
@@ -128,7 +128,7 @@ export default function SectorsPage() {
                               )}
                               <div className="flex space-x-4 mt-2 text-sm text-gray-500">
                                 <span>👥 {sector.membersCount} membres</span>
-                                <span>👑 Président: {sector.presidentName}</span>
+                                <span> Président: {sector.presidentName}</span>
                               </div>
                             </div>
                             <Button size="sm" onClick={() => handleJoinSector(sector.id)}>
