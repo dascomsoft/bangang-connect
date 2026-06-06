@@ -128,7 +128,7 @@ export default function CulturePage() {
             style={!isMobile ? { transform: `translateY(${scrollY * 0.15}px)` } : undefined}
           >
             <Image
-              src="/mekoup.jpg"
+              src="/dansepic1.jpg"
               alt="Chute de Mekoup - Patrimoine culturel Bangang"
               fill
               priority

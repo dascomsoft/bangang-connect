@@ -35,7 +35,7 @@ export default function Footer() {
       <div className="h-1 w-full bg-gradient-to-r from-transparent via-[#C9A96E] to-transparent" />
 
       {/* Contenu principal */}
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-16 lg:py-20">
+      <div className="container mx-auto px-4 sm:px-8 lg:px-20 py-16 lg:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
           
           {/* Colonne 1 — Logo & description */}
@@ -153,12 +153,12 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3 text-sm text-white/50 hover:text-white/70 transition-colors duration-300">
                 <FiPhone size={16} className="text-[#C9A96E] shrink-0" />
-                <a href="tel:+237673916778" className="hover:text-[#C9A96E] transition-colors">+237 6XX XXX XXX</a>
+                <a href="tel:+237673916778" className="hover:text-[#C9A96E] transition-colors">+237 6739167778</a>
               </li>
               <li className="flex items-center gap-3 text-sm text-white/50 hover:text-white/70 transition-colors duration-300">
                 <FiMail size={16} className="text-[#C9A96E] shrink-0" />
-                <a href="mailto:contact@bangangconnect.cm" className="hover:text-[#C9A96E] transition-colors">
-                  contact@bangangconnect.cm
+                <a href="mailto:businessdascom@gmail.com" className="hover:text-[#C9A96E] transition-colors">
+                  businessdascom@gmail.com
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm text-white/50">

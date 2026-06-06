@@ -108,7 +108,7 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/60 to-black/35" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-transparent to-transparent" />
 
-          <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 pb-10">
+          <div className="relative z-10 container mx-auto px-5 sm:px-8 lg:px-20 pb-10">
             <div className="inline-flex items-center gap-2.5 mb-8 px-4 py-2 border border-[#C9A96E]/30 backdrop-blur-md bg-[#C9A96E]/10 rounded-full">
               <div className="w-1.5 h-1.5 rounded-full bg-[#C9A96E] animate-pulse" />
               <span className="font-sans text-[9px] sm:text-[10px] font-medium tracking-[0.3em] uppercase text-[#C9A96E]/90">Royaume des Bamboutos · Fondé par Fouo Patouo</span>

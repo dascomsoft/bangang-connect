@@ -172,7 +172,7 @@ export default function NewsPage() {
             style={!isMobile ? { transform: `translateY(${scrollY * 0.15}px)` } : undefined}
           >
             <Image
-              src="/bams3.jpg"
+              src="/villagepic.jpg"
               alt="Actualités Bangang"
               fill
               priority

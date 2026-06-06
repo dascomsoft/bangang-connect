@@ -190,9 +190,7 @@ export default function Layout({
           }`}
         >
           <div className="w-full">
-          <div className="">
             {children}
-          </div>
           </div>
         </main>
       </div>
