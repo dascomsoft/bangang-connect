@@ -558,7 +558,7 @@ export default function AdminDashboard() {
   const ghostBtn = "inline-flex items-center gap-1.5 px-4 py-2 bg-[#EDE9DF] text-[#1A1712] text-xs font-semibold rounded-xl hover:bg-[#E0DAD0] transition-colors";
 
   return (
-    <div className="min-h-screen bg-[#F4F0E8] font-sans mt-16">
+    <div className="min-h-screen bg-[#F4F0E8] font-sans mt-24">
 
       {/* ══════ HEADER ══════ */}
       <div className="bg-gradient-to-r from-[#0D0B07] to-[#1A1712] px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
@@ -572,7 +572,7 @@ export default function AdminDashboard() {
               <p className="text-white/40 text-[10px] sm:text-xs hidden xs:block">Bangang Connect</p>
             </div>
           </div>
-          {/* Sélecteur mobile */}
+
           <div className="sm:hidden relative">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

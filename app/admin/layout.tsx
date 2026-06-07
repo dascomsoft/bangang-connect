@@ -26,10 +26,10 @@ export default async function AdminLayout({
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 text-white mb-6">
+        {/* <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 text-white mb-6">
           <h1 className="text-2xl font-bold">Administration</h1>
           <p className="text-purple-100 mt-1">Gestion complète de la plateforme Bangang Connect</p>
-        </div>
+        </div> */}
         
         {/* Tabs navigation */}
         {/* <AdminTabs /> */}

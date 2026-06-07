@@ -36,6 +36,17 @@ const ProductSchema = new mongoose.Schema({
     type: String,
     enum: ['neuf', 'comme neuf', 'très bon', 'bon', 'correct', 'à restaurer']
   },
+  
+  // 🆕 CHAMPS DE CONTACT AJOUTÉS
+  phone: {
+    type: String,
+    required: true
+  },
+  whatsapp: {
+    type: String,
+    default: ''
+  },
+  
   isSponsored: {
     type: Boolean,
     default: false

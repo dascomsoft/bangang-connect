@@ -37,6 +37,21 @@ const JobSchema = new mongoose.Schema({
     type: String,
     enum: ['débutant', '1-2 ans', '3-5 ans', '5-10 ans', '10+ ans']
   },
+  
+  // 🆕 CHAMPS DE CONTACT AJOUTÉS
+  email: {
+    type: String,
+    required: true
+  },
+  phone: {
+    type: String,
+    required: true
+  },
+  whatsapp: {
+    type: String,
+    default: ''
+  },
+  
   isActive: {
     type: Boolean,
     default: true
